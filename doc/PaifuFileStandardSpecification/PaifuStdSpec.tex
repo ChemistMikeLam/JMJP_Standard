@@ -5,11 +5,11 @@
 %%  When updating this document, do the following 
 %%  before beginning your own edit: 
 %%  
-%%  1. Update changelog (see details there) 
+%%  1. Append a + after version number. 
 %%  
-%%  2. Append a + after version number. 
+%%  2. Set \releaseDate to Unreleased. 
 %%  
-%%  3. Set \releaseDate to Unreleased. 
+%%  3. Update changelog (see details there) 
 %%  
 %%  Releasing guideline
 %%  
@@ -28,10 +28,10 @@
 %%     4th argument of \DTMdisplaydate is the day of week. 
 %%     0 - Mon, 1 - Tue, etc. Put -1 to omit it. 
 %%  
-\newcommand*{\currentVer}{0.0.0}% 
+\newcommand*{\currentVer}{1.0.0}% 
 \newcommand*{\releaseDate}{% 
-%	Unreleased% 
-	\DTMdisplaydate{2020}{06}{23}{1}% 
+	Unreleased% 
+%	\DTMdisplaydate{2020}{06}{23}{1}% 
 }% 
 % 
 \documentclass[% 
@@ -89,6 +89,7 @@
 \usepackage[hyper]{listings}% 
 \lstdefinelanguage{jmjp-ebnf}{% 
 	alsoletter={^|=}% 
+	,classoffset=0% 
 	,morekeywords={% Format 5 per row in dictionary order for readability
 		,actAnk,actChi,actDmk,actKkn,actKrg% 
 		,actOya,actPon,actRch,actRon,actRsn% 
@@ -96,28 +97,35 @@
 		,dice,diceRes,discActs,discTile,dora% 
 		,dragonTiles,drawActs,drawTile,endHand,file% 
 		,fname,frame,frameAct,frameCmt,frameFlow% 
-		,frameHonba,frameId,frameNum,frameSeq,frameWind% 
-		,framesRecd,furoAnk,furoChi,furoDmk,furoKan% 
+		,frameHonba,frameId,frameNum,frameSeq,framesRecd% 
+		,frameWind,furoAnk,furoChi,furoDmk,furoKan% 
 		,furoKkn,furoPon,hand,kyoutak,lname%
 		,match,matchDate,matchDayOfWk,matchNumInDay,matchNumInStage% 
-		,matchPlace,matchTP,matchTime,name,numTiles% 
+		,matchPlace,matchTime,matchTP,name,numTiles% 
 		,plyerAffil,plyerId,plyerInfo,plyerName,plyerTeam% 
 		,postMatchInfo,preMatchInfo,pt,ptFrmEnd,ptFrmStart% 
 		,ptHonba,ptMatchEnd,ptPostn,ptPostn14,ptPostn23% 
 		,ptRetn,ptRule,ptStart,ptTour,ptTourNew% 
 		,ptTourPrev,ptTourPrsnl,ptTourTeam,realTiles,recerInfo% 
 		,recerName,seat,startHand,strLit,strNative% 
-		,strRoman,tileChiHand,tileChiIn,tileFrom,tileFuro% 
-		,tileInHand,tileTsumo,tourInfo,tourName,tourStage% 
+		,strRoman,tileChiHand,tileChiIn,tileDmkHand,tileDmkIn% 
+		,tileFrom,tileFuro,tileInHand,tileKknIn,tilePonHand% 
+		,tilePonIn,tileTsumo,tourInfo,tourName,tourStage% 
 		,tourYear,unknownTiles,version,windTiles,wordTiles% 
 	}% 
+	,classoffset=2% 
+	,morekeywords={% Deprecated ones that appears in changelog comes here 
+	}% 
+	,classoffset=0% 
 	,sensitive=true% 
 	,string=[b]{"}% 
 	,moredelim=**[s][\color{cdel}]{[}{]}% 
 	,moredelim=**[s][\color{copt}]{^(}{)}% 
 	,moreemph={|,=}% 
 	,basicstyle={\ttfamily}% 
-	,keywordstyle={\color{ckey}\itshape}% 
+	,keywordstyle={[1]{\color{ckey}\itshape}}% 
+	,keywordstyle={[2]{\color{ckey}\itshape}}% 
+	,keywordstyle={[3]{\color{cdpr}\itshape}}%
 	,stringstyle={\color{cstr}}% 
 	,emphstyle={\color{copt}}% 
 	,index=[1][keywords]% 
@@ -144,7 +152,7 @@
 	,indexstyle={[1]\indexKeywords}
 }% 
 % 
-\newcommand*{\indexKeywords}[1]{\index{\texttt{#1}}}% 
+\newcommand*{\indexKeywords}[1]{\index{#1@\texttt{#1}}}% 
 % 
 %Layout and style
 \usepackage[% 
@@ -203,10 +211,11 @@
 	,x11names% 
 	,hyperref% 
 ]{xcolor}% 
-\colorlet{ckey}{DarkRed!90!White}% 
-\colorlet{cstr}{DarkGreen!90!White}% 
-\colorlet{copt}{DarkBlue!90!White}% 
-\colorlet{cdel}{Black!90!White}% 
+\colorlet{ckey}{DarkRed!90!White}% For keywords
+\colorlet{cstr}{DarkGreen!90!White}% For strings
+\colorlet{copt}{DarkBlue!90!White}% For operators (ie repitition counter)
+\colorlet{cdel}{Black!90!White}% For delimiters (ie sq bracket groupings) 
+\colorlet{cdpr}{LightPink!90!Black}% For deprecated identifiers (in changelog)
 % 
 \usepackage{multicol}% 
 \usepackage{longtable}% 
@@ -253,16 +262,16 @@
 		\@restonecolfalse{}%
 	\else{}% 
 		\@restonecoltrue{}% 
-		\begin{multicols*}{3}% 
+		\begin{multicols}{3}% 
 	\fi{}% 
 	\parindent\z@\relax{}% 
-%	\parskip\z@ \@plus .3\p@\relax{}% 
+	\parskip\z@ \@plus .3\p@\relax{}% 
 %	\columnseprule \z@\relax{}% 
 %	\columnsep 35\p@\relax{}% 
 	\let\item\@idxitem{}% 
 }{% 
 	\if@restonecol{}% 
-		\end{multicols*}% 
+		\end{multicols}% 
 	\fi{}% 
 }% 
 \makeatother{}% 
@@ -337,7 +346,7 @@
 		% 
 		\begin{center}\begin{tabular}{|l|p{0.75\textwidth}|}\hline% 
 			\multicolumn{1}{|c|}{Item}&\multicolumn{1}{c|}{Meaning}\\\hline% 
-			\lstinline[classoffset=1,morekeywords={identifier}]/identifier/&An identifier (nonterminal). \newline% 
+			\lstinline[classoffset=1,morekeywords={identifier},classoffset=0]/identifier/&An identifier (nonterminal). \newline% 
 				If it appears left of a \lstinline/=/, then it expands to the expression on the RHS. \newline% 
 				If it appears on the right, then it would be explained in another line. \\\hline%
 			\lstinline/"terminal"/&A terminal string, verbatim. \newline% 
@@ -349,6 +358,7 @@
 				If $n$ is omitted then $n=\infty$. \newline% 
 				If $m=n$ then it have to appear exactly $m$ times. \\\hline% 
 			\lstinline/|/&XOR. Only one among the list can appear each time\\\hline% 
+			\lstinline[classoffset=2,morekeywords={deprecated},classoffset=0]/deprecated/&Deprecated identifiers that should only appear in changelog. \\\hline% 
 		\end{tabular}\end{center}% 
 		% 
 	%\clearpage{}% 
@@ -383,7 +393,7 @@
 			% 
 			\rulePar{}Programs designed to write paifu files are not required to use these tokens even if a suitable one is available, although its usage is suggested. % 
 			% 
-			%\rulePar{}Programs designed to read paifu files of a certain version should be able to parse the shorthand tokens defined in that version. % 
+			\rulePar{}Programs designed to read paifu files of a certain version should be able to parse the shorthand tokens defined in that version. % 
 			% 
 			\rulePar{}Future versions may add new shorthand tokens, but they are not likely to be removed; removing shorthand tokens in use are likely to break backward compatibility. % 
 			% 
@@ -517,29 +527,43 @@
 			% 
 			\rulePar{}When there are more than one f\={u}ro, the newest one should be documented first, with them getting older down the list. % 
 			% 
-			\rulePar{}\lstinline/furoChi = "chi[" realTiles "," [tileChiHand]^(2-2) "]"/% 
+			\rulePar{}\lstinline/furoChi = "chi[" tileChiIn "," [tileChiHand]^(2-2) "]"/% 
+			% 
+			\rulePar{}\lstinline/tileChiIn = realTiles/% 
 			% 
 			\rulePar{}\lstinline/tileChiHand = realTiles/% 
 			% 
 			\paragraph*{}\lstinline/furoChi/ refers to a f\={u}ro made by chi-ing a discard tile (\lstinline/tileChiIn/) from the player on the left (\textjapanese{上家}) with 2 tiles in you hand (\lstinline/tileChiHand/), forming a shuntsu (\textjapanese{順子}). % 
 			% 
-			\rulePar{}\lstinline/furoPon = "pon[" realTiles "," tileFrom "]"/% 
+			\rulePar{}\lstinline/furoPon = "pon[" tilePonIn "," [tilePonHand]^(2-2) "," tileFrom "]"/% 
+			% 
+			\rulePar{}\lstinline/tilePonIn = realTiles/% 
+			% 
+			\rulePar{}\lstinline/tilePonHand = realTiles/% 
 			% 
 			\rulePar{}\lstinline/tileFrom = "k" | "t" | "s"/% 
 			% 
-			\paragraph*{}\lstinline/furoPon/ refers to a f\={u}ro made by pon-ing a discard tile from any other player when one have two other of the same tile in hand. The field \lstinline/tileFrom/ identifies the source of the tile: \lstinline/"k"/ for \textit{k\/}amicha (\textjapanese{上家}), the player on the left; \lstinline/"t"/ for \textit{t\/}oimen (\textjapanese{対面}), the player on the oppositeside of the table; and \lstinline/"s"/ for \textit{s\/}himocha (\textjapanese{下家}), the player on the right. % 
+			\paragraph*{}\lstinline/furoPon/ refers to a f\={u}ro made by pon-ing a discard tile (\lstinline/tilePonIn/) from any other player when one have two other of the same tile in hand (\lstinline/tilePonHand/). The field \lstinline/tileFrom/ identifies the source of the tile: \lstinline/"k"/ for \textit{k\/}amicha (\textjapanese{上家}), the player on the left; \lstinline/"t"/ for \textit{t\/}oimen (\textjapanese{対面}), the player on the oppositeside of the table; and \lstinline/"s"/ for \textit{s\/}himocha (\textjapanese{下家}), the player on the right. % 
 			% 
 			\rulePar{}\lstinline/furoKan = furoDmk | furoKkn | furoAnk/% 
 			% 
-			\rulePar{}\lstinline/furoDmk = "dmk[" realTiles "," tileFrom "]"/% 
+			\rulePar{}\lstinline/furoDmk = "dmk[" tileDmkIn "," [tileDmkHand]^(3-3) "," tileFrom "]"/% 
 			% 
-			\paragraph*{}\lstinline/furoDmk/ refers to a f\={u}ro made by daiminkan (\textjapanese{大明槓}), an action that can only be done when another player discards a tile which one has all the other three of the same tile in hand. % 
+			\rulePar{}\lstinline/tileDmkIn = realTiles/% 
 			% 
-			\rulePar{}\lstinline/furoKkn = "kkn[" realTiles "," tileFrom "]"/% 
+			\rulePar{}\lstinline/tileDmkHand = realTiles/% 
 			% 
-			\paragraph*{}\lstinline/furoKkn/ refers to a f\={u}ro made by kakan (\textjapanese{加槓}), an action that can only be performed when one has pon-ed a tile, and then draws the forth of that tile into hand. % 
+			\paragraph*{}\lstinline/furoDmk/ refers to a f\={u}ro made by daiminkan (\textjapanese{大明槓}), an action that can only be done when another player discards a tile (\lstinline/tileDmkIn/) which one has all the other three of the same tile in hand (\lstinline/tileDmkHand/). % 
 			% 
-			\rulePar{}\lstinline/furoAnk = "ank[" realTiles "]"/% 
+			\rulePar{}\lstinline/furoKkn = /\\*{}% 
+			\indentRule{}\lstinline/    "kkn[" tileKknIn "," tilePonIn "," [tilePonHand]^(2-2) "," /\\*{}% 
+			\indentRule{}\lstinline/    tileFrom "]"/% 
+			% 
+			\rulePar{}\lstinline/tileKknIn = realTiles/% 
+			% 
+			\paragraph*{}\lstinline/furoKkn/ refers to a f\={u}ro made by kakan (\textjapanese{加槓}), an action that can only be performed when one has pon-ed a tile, and then draws the forth of that tile into hand (\lstinline/tileKknIn/). % 
+			% 
+			\rulePar{}\lstinline/furoAnk = "ank[" [realTiles]^(4-4) "]"/% 
 			% 
 			\paragraph*{}\lstinline/furoAnk/ refers to an ankan (\textjapanese{暗槓}), an action that can only performed when one has all four of a tile in hand. This technically does not count as a f\={u}ro, but it has the same effect of removing the tiles from the hand, so it is documented in the same way as a f\={u}ro. % 
 			% 
@@ -573,6 +597,15 @@
 	% 
 		\rulePar{}Whitespaces are ignored except in string literals wrapped in a pair of double quotes. % 
 		% 
+	%\clearpage{}% 
+		\subsection{Comments}\label{subsec:cmt}% 
+	% 
+		\rulePar{}\texttt{//} marks the beginning of a comment. Such comments extends to the end of the same line. However, if the symbol is enclosed within a pair of double quotes, it will not be parsed as such. % 
+		% 
+		\rulePar{}Any such comments are to be ignored by parsers. % 
+		% 
+		\paragraph*{}This provides for C-style comments that are ignored by parsers, which might be useful for hand-written files. Do not confuse this with the \lstinline/frameCmt/ field explained below in Section~\ref{subsubsec:postfrmflow}; this field contains comment that the parser would read verbatim as strings. % 
+		% 
 %\clearpage{}% 
 \section{File structure}% 
 % 
@@ -584,9 +617,9 @@
 	% 
 	\paragraph*{}However, there must be at least one match in each paifu file. This restriction is imposed considering that a paifu file without a match is meaningless. % 
 	% 
-	\rulePar{}\lstinline/version = "0"/% 
+	\rulePar{}\lstinline/version/ refers to the version number string \texttt{big.small}. % 
 	% 
-	\paragraph*{}The version number in the paifu file refers to the big version number. Because the versioning of this standard employs semantic versioning, new versions breaking backward compatibility must increment the big version number, and add the corresponding entry here. % 
+	\rulePar{}Patch updates of the standard should not create any incompatibility between versions. % 
 	% 
 	\rulePar{}\lstinline/match = "(" preMatchInfo [frame]^(0-) postMatchInfo ")"/% 
 	% 
@@ -756,11 +789,13 @@
 			% 
 			\paragraph*{}\lstinline/actChi/ refers to the case where a player chi-ed the discard tile from the previous player. Therefore the chi-ing player will have to take out the 2 documented tiles from hand to finish the act. % 
 			% 
-			\rulePar{}\lstinline/actPon = "pn"/% 
+			\rulePar{}\lstinline/actPon = "pn[" [realTiles]^(2-2) "]"/% 
 			% 
-			\rulePar{}\lstinline/actDmk = "dk"/% 
+			\paragraph*{}\lstinline/actPon/ refers to the case where a player pon-ed the discard tile in the previous \lstinline/frameAct/. The pon-ing player would have to take out the 2 documented tiles from hand to finish the act. % 
 			% 
-			\paragraph*{}\lstinline/actDmk/ refers to the case where a player has declared a daiminkan on the previous discard tile. There should be no discard tile in this \lstinline/frameAct/, and the next \lstinline/frameAct/ should also be by this player drawing an \lstinline/actRsn/. % 
+			\rulePar{}\lstinline/actDmk = "dk[" [realTiles]^(3-3) "]"/% 
+			% 
+			\paragraph*{}\lstinline/actDmk/ refers to the case where a player has declared a daiminkan on the previous discard tile. The kan-ing player would have to take out the 3 documented tiles from hand to finish the act. There should be no discard tile in this \lstinline/frameAct/, and the next \lstinline/frameAct/ should also be by this player drawing an \lstinline/actRsn/. % 
 			% 
 			\rulePar{}\lstinline/actRsn = "rs[" realTiles "]"/% 
 			% 
@@ -790,9 +825,9 @@
 			% 
 			\paragraph*{}\lstinline/actKkn/ refers to the case where a player declares a kakan with the documented tile. Provided that the kakan stands (that is, no one steals it), the next \lstinline/frameAct/ should be by the same player, drawing an \lstinline/actRsn/. % 
 			% 
-			\rulePar{}\lstinline/actAnk = "ak[" realTiles "]"/% 
+			\rulePar{}\lstinline/actAnk = "ak[" [realTiles]^(4-4) "]"/% 
 			% 
-			\paragraph*{}\lstinline/actAnk/ refers to the case where a player declares an ankan with the documented tile. Provided that the ankan stands (that is, no one steals it), the next \lstinline/frameAct/ should be by the same player, drawing am \lstinline/actRsn/. It should be noted that ankan usually stands, since the limited variant of rules that alllows stealing ankan only allows kokushi (\textjapanese{国士無双}) to do so. % 
+			\paragraph*{}\lstinline/actAnk/ refers to the case where a player declares an ankan with the 4 documented tiles. Provided that the ankan stands (that is, no one steals it), the next \lstinline/frameAct/ should be by the same player, drawing am \lstinline/actRsn/. It should be noted that ankan usually stands, since the limited variant of rules that alllows stealing ankan only allows kokushi (\textjapanese{国士無双}) to do so. % 
 			% 
 			\rulePar{}\lstinline/actTsm = "tm"/% 
 			% 
@@ -813,7 +848,7 @@
 			% 
 			\rulePar{}\lstinline/frameCmt = strLit/% 
 			% 
-			\paragraph*{}\lstinline/frameCmt/ is used for comments on the frame. % 
+			\paragraph*{}\lstinline/frameCmt/ is used for comments on the frame. This field contains comment that would be read verbatim by parsers as strings (\lstinline/strLit/), which might be displayed or outputted depending on program setttings. On the contrary, the file comments descrbed in Section~\ref{subsec:cmt} would be outright ignored by parsers. % 
 			% 
 	%\clearpage{}% 
 	\subsection{Post-match information}% 
@@ -837,6 +872,13 @@
 		\item{}The shorthand tokens currently only covers a subset of Japanese stuffs, but considering that Japanese mahjong is expanding and becoming international, more tokens might be beneficial% 
 	\end{itemize}% 
 	% 
+% 
+\appendix{}% 
+\clearpage{}% 
+%Do not index backmatter
+\lstset{% 
+	deleteindex=[1][keywords]% 
+}% 
 %\clearpage{}% 
 \begin{changelog}[% 
 	section=true% 
@@ -865,6 +907,22 @@
 		version=\currentVer{}% 
 		,author={\github{ChemistMikeLam}}% 
 		,date=\releaseDate{}% 
+	]% 
+		\added{}% 
+			\item{}Added requirement for software to be able to parse all sorthand tokens in a supported version. % 
+			\item{}Added functionality of file comments that would be ignored by parsers. % 
+			\item{}(For future use) Added a new class and corresponding style of identifiers, for when some keywords becomes deprecated but still needs formatting in changelog. % 
+		\changed{}% 
+			\item{}\lstinline/version/ now refers to the \texttt{big.small} version string instead of big version only. % 
+			\item{}Representations of \lstinline/furoPon/, \lstinline/furoDmk/, \lstinline/furoKkn/, \lstinline/furoAnk/; \lstinline/actPon/, \lstinline/actDmk/, \lstinline/actAnk/ have been changed to accomodate the possibility of red five tiles in them. % 
+			\item{}\lstinline/name/ now uses parenthesis instead of square brackets to surround \lstinline/lname/ and \lstinline/fname/. % 
+			\item{}The changelog, references and index sections are now put as appendix. % 
+	\end{version}% 
+	% 
+	\begin{version}[% 
+		version=0.0.0% 
+		,author={\github{ChemistMikeLam}}% 
+		,date={\DTMdisplaydate{2020}{06}{23}{1}}% 
 		,simple=true% 
 	]% 
 		\item{}Initial version% 
