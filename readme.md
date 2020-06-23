@@ -6,7 +6,7 @@ This is a repository for softwares related to recording and displaying paifus (ç
 
 This repository is expected to consist of the following components: 
 
-- [v] A standard specification describing a text-only format for digitally recording paifus
+- [x] A standard specification describing a text-only format for digitally recording paifus
 
 - [ ] A parser for reading in such paifus into an internal representation
 
