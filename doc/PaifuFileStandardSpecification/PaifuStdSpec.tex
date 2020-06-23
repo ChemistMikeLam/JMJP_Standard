@@ -1,0 +1,885 @@
+% !TeX program = xelatex
+%%  
+%%  Update guideline 
+%%  
+%%  When updating this document, do the following 
+%%  before beginning your own edit: 
+%%  
+%%  1. Update changelog (see details there) 
+%%  
+%%  2. Append a + after version number. 
+%%  
+%%  3. Set \releaseDate to Unreleased. 
+%%  
+%%  Releasing guideline
+%%  
+%%  When releasing a new version of this document, 
+%%  do the following: 
+%%  
+%%  1. Increment version number here. 
+%%     Version number: big.small.patch. 
+%%     If you break backward compatibility then increment big. 
+%%     If it is smaller update then increment small. 
+%%     If it is a patch then increment patch. 
+%%     When a counter is incremented, all counters to the right 
+%%     of it should be reset to 0. 
+%%  
+%%  2. Set \releaseDate to \DTMdisplaydate with the correct date. 
+%%     4th argument of \DTMdisplaydate is the day of week. 
+%%     0 - Mon, 1 - Tue, etc. Put -1 to omit it. 
+%%  
+\newcommand*{\currentVer}{0.0.0}% 
+\newcommand*{\releaseDate}{% 
+%	Unreleased% 
+	\DTMdisplaydate{2020}{06}{23}{1}% 
+}% 
+% 
+\documentclass[% 
+	a4paper% 
+	,10pt% 
+	,twoside% 
+	,notitlepage% 
+]{article}% 
+% 
+%Fonts and language 
+\usepackage{fontspec}% 
+\setromanfont{Source Serif Pro}% 
+\setsansfont{Source Sans Pro}% 
+\setmonofont{Source Code Pro}% 
+% 
+\usepackage{polyglossia}% 
+\setmainlanguage[variant=usmax]{english}% 
+\setotherlanguage{japanese}% 
+\enablehyphenation{}% 
+\newfontfamily{\japanesefont}[Script=CJK,Language=Japanese]{Source Han Serif}% 
+% 
+%Dates and versioning
+\usepackage[% 
+	english% 
+	,showdow=true% 
+	,useregional=false% 
+]{datetime2}% 
+\DTMnewdatestyle{ddd-dd-mmm-yyyy}{% 
+	\renewcommand*{\DTMdisplaydate}[4]{% 
+		\ifnum##4>-1{\DTMenglishshortweekdayname{##4}\space}\fi% Day of week 
+		\DTMtwodigits{##3}\space% Day 
+		\DTMenglishshortmonthname{##2}\space% Month 
+		##1% Year 
+	}% 
+	\renewcommand*{\DTMDisplaydate}{\DTMdisplaydate}% 
+}% 
+\DTMsetdatestyle{ddd-dd-mmm-yyyy}% 
+% 
+\usepackage{changelog}% 
+% 
+%Document metadata
+\title{\titleName{}}% 
+\author{% 
+	\github{ChemistMikeLam}\\% 
+	\email{43129403+ChemistMikeLam@users.noreply.github.com}% 
+}% 
+\date{\verAndDate{}}% 
+% 
+%Math and units
+\usepackage{amsmath}% 
+\usepackage{amssymb}% 
+\usepackage{siunitx}% 
+\everymath{\displaystyle{}}% 
+% 
+\usepackage[hyper]{listings}% 
+\lstdefinelanguage{jmjp-ebnf}{% 
+	alsoletter={^|=}% 
+	,morekeywords={% Format 5 per row in dictionary order for readability
+		,actAnk,actChi,actDmk,actKkn,actKrg% 
+		,actOya,actPon,actRch,actRon,actRsn% 
+		,actTmg,actTsm,bambooTiles,charTiles,circleTiles% 
+		,dice,diceRes,discActs,discTile,dora% 
+		,dragonTiles,drawActs,drawTile,endHand,file% 
+		,fname,frame,frameAct,frameCmt,frameFlow% 
+		,frameHonba,frameId,frameNum,frameSeq,frameWind% 
+		,framesRecd,furoAnk,furoChi,furoDmk,furoKan% 
+		,furoKkn,furoPon,hand,kyoutak,lname%
+		,match,matchDate,matchDayOfWk,matchNumInDay,matchNumInStage% 
+		,matchPlace,matchTP,matchTime,name,numTiles% 
+		,plyerAffil,plyerId,plyerInfo,plyerName,plyerTeam% 
+		,postMatchInfo,preMatchInfo,pt,ptFrmEnd,ptFrmStart% 
+		,ptHonba,ptMatchEnd,ptPostn,ptPostn14,ptPostn23% 
+		,ptRetn,ptRule,ptStart,ptTour,ptTourNew% 
+		,ptTourPrev,ptTourPrsnl,ptTourTeam,realTiles,recerInfo% 
+		,recerName,seat,startHand,strLit,strNative% 
+		,strRoman,tileChiHand,tileChiIn,tileFrom,tileFuro% 
+		,tileInHand,tileTsumo,tourInfo,tourName,tourStage% 
+		,tourYear,unknownTiles,version,windTiles,wordTiles% 
+	}% 
+	,sensitive=true% 
+	,string=[b]{"}% 
+	,moredelim=**[s][\color{cdel}]{[}{]}% 
+	,moredelim=**[s][\color{copt}]{^(}{)}% 
+	,moreemph={|,=}% 
+	,basicstyle={\ttfamily}% 
+	,keywordstyle={\color{ckey}\itshape}% 
+	,stringstyle={\color{cstr}}% 
+	,emphstyle={\color{copt}}% 
+	,index=[1][keywords]% 
+}[keywords,strings]% 
+\lstset{% 
+	showlines=true% 
+	,showspaces=true% 
+	,emptylines={*1}% 
+	,language={jmjp-ebnf}% 
+	,tabsize=4% 
+	,numbers=left% 
+	,stepnumber=5% 
+	,numberfirstline=true% 
+	,numberstyle={\small\color{DarkGrey}}% 
+	,numberblanklines=true% 
+	,firstnumber=auto% 
+	,frame=lbrt% 
+	,frameround=tttt% 
+	,columns=[c]fixed% 
+	,flexiblecolumns=false% 
+	,keepspaces=true% 
+	,breaklines=true% 
+	,breakatwhitespace=true% 
+	,indexstyle={[1]\indexKeywords}
+}% 
+% 
+\newcommand*{\indexKeywords}[1]{\index{\texttt{#1}}}% 
+% 
+%Layout and style
+\usepackage[% 
+	driver=xetex% 
+	,showframe=false% 
+	,verbose=true% 
+	,paper=a4paper% 
+	,portrait=true% 
+	,twoside=true% 
+	,centering=true% 
+	,includehead=false% 
+	,includefoot=false% 
+	,includemp=false% 
+	,scale=0.75% 
+	,marginparwidth=2em% 
+	,asymmetric=true% 
+	,reversemarginpar=true% 
+]{geometry}% 
+% 
+\usepackage{fancyhdr}% 
+\pagestyle{fancy}% 
+\fancyhf{}% 
+\setlength{\headheight}{2\baselineskip}% 
+\fancyhf[HLO,HRE]{% 
+	\titleNameTop{}\leavevmode{}\\{}% 
+	\headerSubsecMark{}% 
+}% 
+\fancyhf[HRO,HLE]{% 
+	\verAndDate{}\leavevmode{}\\{}% 
+	Page~\thepage{}% 
+}% 
+% 
+\renewcommand{\sectionmark}[1]{\markboth{Section~\thesection{}\quad{}#1}{}}% 
+\renewcommand{\subsectionmark}[1]{\markright{Section~\thesubsection{}\quad{}#1}}% 
+\makeatletter{}% 
+\newcommand{\doIfEmpty}[3]{% 
+	\begingroup{}% 
+	\sbox0{#1}% 
+	\ifdim\wd0=\z@\relax{}% 
+		\endgroup{}% 
+		\expandafter#2\relax{}% 
+	\else{}% 
+		\endgroup{}% 
+		\expandafter#3\relax{}% 
+	\fi{}% 
+}% 
+\makeatother{}% 
+\newcommand*{\headerSubsecMark}{% 
+	\doIfEmpty{\rightmark{}}{\leftmark{}}{\rightmark{}}% 
+}% 
+% 
+\usepackage[% 
+	driver=xetex% 
+	,dvipsnames% 
+	,svgnames% 
+	,x11names% 
+	,hyperref% 
+]{xcolor}% 
+\colorlet{ckey}{DarkRed!90!White}% 
+\colorlet{cstr}{DarkGreen!90!White}% 
+\colorlet{copt}{DarkBlue!90!White}% 
+\colorlet{cdel}{Black!90!White}% 
+% 
+\usepackage{multicol}% 
+\usepackage{longtable}% 
+\usepackage{ltcaption}% 
+\usepackage[longtable]{multirow}% 
+% 
+\renewcommand{\footnoterule}{% 
+	\kern -3pt% 
+	\hrule width \textwidth% 
+	\kern 2.6pt% 
+}% 
+% 
+\newcommand*{\ruleSymbol}{\textjapanese{⚠}}% 
+\newcommand*{\ruleMargin}{\marginpar{\flushright{}\ruleSymbol{}}}%
+\newcommand*{\rulePar}{\paragraph*{\ruleMargin{}}}% 
+\newcommand*{\indentRule}{\rule{10pt}{0pt}}% 
+% 
+%ToC affairs
+\usepackage{makeidx}% 
+\makeindex{}% 
+% 
+\usepackage[% 
+	other% 
+	,numbib% 
+	,numindex% 
+	,nottoc% 
+]{tocbibind}% 
+\tocotherhead{section}% 
+% 
+\usepackage[toc]{multitoc}% 
+% 
+\newcommand*{\renameToc}{% 
+	\renewcommand*{\tocbibname}{References}% 
+	\renewcommand*{\contentsname}{Table of Contents}% 
+	\renewcommand*{\indexname}{Index of Identifiers}% 
+}% 
+\addto\captionsenglish{\renameToc{}}% 
+\addto\captionsjapanese{\renameToc{}}% 
+% 
+\makeatletter{}% 
+\renewenvironment{theindex}{% Redefine such that index does not create new pages 
+	\section{\indexname}%
+	\if@twocolumn{}%
+		\@restonecolfalse{}%
+	\else{}% 
+		\@restonecoltrue{}% 
+		\begin{multicols*}{3}% 
+	\fi{}% 
+	\parindent\z@\relax{}% 
+%	\parskip\z@ \@plus .3\p@\relax{}% 
+%	\columnseprule \z@\relax{}% 
+%	\columnsep 35\p@\relax{}% 
+	\let\item\@idxitem{}% 
+}{% 
+	\if@restonecol{}% 
+		\end{multicols*}% 
+	\fi{}% 
+}% 
+\makeatother{}% 
+% 
+%Hyperref and bookmarks
+\usepackage{hyperref}% 
+% 
+\newcommand*{\titleNameTop}{Standard Specification for Paifu Files}% 
+\newcommand*{\titleNameBottom}{For programs in repository \github{ChemistMikeLam/JapaneseMahjongPaifu}}% 
+\newcommand*{\titleName}{% 
+	\titleNameTop{}\texorpdfstring{\\{}}{ }% 
+	\titleNameBottom{}% 
+}% 
+\newcommand{\verAndDate}{Version \currentVer{}, Dated \releaseDate{}}% 
+% 
+\newcommand*{\doi}[1]{\texorpdfstring{\href{https://dx.doi.org/#1}{#1}}{#1}}% 
+\newcommand*{\github}[1]{\texorpdfstring{\href{https://github.com/#1}{\texttt{#1}}}{#1}}% 
+\newcommand*{\email}[1]{\texorpdfstring{\href{mailto:#1}{\texttt{#1}}}{#1}}% 
+%
+\hypersetup{% 
+	%Bookmarks 
+	bookmarksnumbered=true% 
+	,bookmarksopen=true% 
+	,bookmarksopenlevel=\maxdimen% 
+	,bookmarkstype=toc% 
+	%Links format 
+	,colorlinks=true% 
+	,breaklinks=true% 
+	%PDF display control 
+	,pdfstartview=FitH top% 
+	,pdfnewwindow=true% 
+	%PDF metadata attributes 
+	,pdftitle=\titleName{}% 
+	,pdfauthor=ChemistMikeLam% 
+	%Miscellaneous 
+	,unicode=true% 
+}% 
+\Urlmuskip=0mu plus 3mu% 
+\usepackage{bookmark}% 
+% 
+\begin{document}% 
+% 
+\DTMsetdatestyle{ddd-dd-mmm-yyyy}% 
+%
+\pdfbookmark[0]{\titleNameTop{}\space\titleNameBottom{}}{titleName}% 
+\maketitle{}% 
+\tableofcontents{}% 
+% 
+%\clearpage{}% 
+\section{Introduction}% 
+% 
+	\paragraph*{}Japanese mahjong, also known as riichi mahjong, among other names, is a variant of mahjong originating and popular in Japan. Its popularity outside of Japan is also rising due to its less reliance on luck, as well as promotions by individuals and popular culture works. The establishment of the M league in 2018 pushes it further as a competitive sport aiming for inclusion in the olympics. % 
+	% 
+	\paragraph*{}As a competitive game of skills, paifus (\textjapanese{牌譜} / \textjapanese{ぱいふ}), or records of play, are very important for this game, just like they are for chess, go, shogi, and other games in this genre. Paifus of professional players can often be found at archives of professional player associations and match organisers, while various online Japanese mahjong platforms also provide for paifu service for its players, with or without charge. % 
+	% 
+	\paragraph*{}However, (from limited google searches) there seems to lack an open standard for digitally storing paifus in a computer-readable fashion. Many paifus still only exist offline, and for those online, each vendor seem to have their own in-house non-disclosed standards. This is detrimental to the development of the sport, as the rise of popularity of the sport would unevitably require paifus to be publically available and transmittable using a common standard. % 
+	% 
+	\paragraph*{}While not posing as the perfect solution, this document aims to provide a description for documenting paifus in a computer-readable format in an open standard, upon which paifus can be recorded, transmitted digitally, and viewed through open- (and less preferrably closed-) source softwares implemented base on this standard. % 
+	% 
+%\clearpage{}% 
+\section{General notations}\label{sec:gen}% 
+% 
+	%\clearpage{}% 
+	\subsection{Rules and explanations}\label{subsec:rule}% 
+	% 
+		\paragraph*{}In the sections below, paragraphs stating rules and paragraphs explaining rules are interwined together. Paragraphs stating rules are marked with a \ruleSymbol{} symbol in the margin; each symbol indicates one rule. Although paragraphs explaining rules are not marked, they are not meant to be skipped. % 
+		% 
+	%\clearpage{}% 
+	\subsection{Syntax of rules}\label{subsec:syntax}% 
+	% 
+		\paragraph*{}The description of structure of the paifu files employs an EBNF-ish syntax: % 
+		% 
+		\begin{center}\begin{tabular}{|l|p{0.75\textwidth}|}\hline% 
+			\multicolumn{1}{|c|}{Item}&\multicolumn{1}{c|}{Meaning}\\\hline% 
+			\lstinline[classoffset=1,morekeywords={identifier}]/identifier/&An identifier (nonterminal). \newline% 
+				If it appears left of a \lstinline/=/, then it expands to the expression on the RHS. \newline% 
+				If it appears on the right, then it would be explained in another line. \\\hline%
+			\lstinline/"terminal"/&A terminal string, verbatim. \newline% 
+				\verb|\"| inside the string refers to \verb|"| without the backslash, however. \newline% 
+				Also, remove the surrounding double quotes before including in the files. \\\hline% 
+			\lstinline/expr expr/&Concatenation symbols are omitted for clarity\\\hline% 
+			\lstinline/[...]^(m-n)/&Content inside bracket can appear $m$ to $n$ times. \newline% 
+				$m$ and $n$ are both integers with $0 \le m \le n$. \newline% 
+				If $n$ is omitted then $n=\infty$. \newline% 
+				If $m=n$ then it have to appear exactly $m$ times. \\\hline% 
+			\lstinline/|/&XOR. Only one among the list can appear each time\\\hline% 
+		\end{tabular}\end{center}% 
+		% 
+	%\clearpage{}% 
+	\subsection{Recurring elements in rules}\label{subsec:recur}% 
+	% 
+		%\clearpage{}% 
+		\subsubsection{The \texttt{strLit} format}\label{subsubsec:strlit}% 
+		% 
+			\rulePar{}\lstinline/strLit = ["snt[" strNative "]"]^(0-1) ["srm[" strRoman "]"]^(0-1)/% 
+			% 
+			\rulePar{}\lstinline/strNative/ is the relevant name in its native script, wrapped in a pair of double quotes. % 
+			% 
+			\rulePar{}\lstinline/strRoman/ is the relevant name romanized, wrapped in a pair of double quotes. % 
+			% 
+			\paragraph*{}The \lstinline/strLit/ format is used for (possibly) bilingual string literals in the paifu files. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{The \texttt{name} format}\label{subsubsec:name}% 
+		% 
+			\rulePar{}\lstinline/name = "[" [lname]^(0-1) "," [fname]^(0-1) "]"/% 
+			% 
+			\rulePar{}\lstinline/lname = strLit/% 
+			% 
+			\rulePar{}\lstinline/fname strLit/% 
+			% 
+			\paragraph*{}All human names in the file place the last name in front of the first name. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Shorthand tokens}\label{subsubsec:shtkn}% 
+		% 
+			\paragraph*{}Shorthand tokens are used to represent high-profile matches, teams, etc. They are used in place of certain \lstinline/strLit/s to reduce typing and to save (a little) disc space. % 
+			% 
+			\rulePar{}Programs designed to write paifu files are not required to use these tokens even if a suitable one is available, although its usage is suggested. % 
+			% 
+			%\rulePar{}Programs designed to read paifu files of a certain version should be able to parse the shorthand tokens defined in that version. % 
+			% 
+			\rulePar{}Future versions may add new shorthand tokens, but they are not likely to be removed; removing shorthand tokens in use are likely to break backward compatibility. % 
+			% 
+			\rulePar{}Future versions should strive to keep the length of new shorthand tokens within 10 characters; however this is no strict restriction. Use as few characters as possible while staying meaningful and unambiguous. % 
+			% 
+			\paragraph*{}A list of all shorthand tokens available for use in paifu files is available in Table~\ref{tab:shtkn}. % 
+			% 
+			\begin{table}[p]% 
+				\begin{longtable*}{|c|c|p{0.55\textwidth}|}\hline% 
+					Identifier&Shorthand&\multicolumn{1}{c|}{Meaning}\\\hline\endhead% 
+					\lstinline/tourName/&\lstinline/"mlg"/&M League / \textjapanese{Mリーグ}\\\hline% 
+					\multirow{11}{*}{\lstinline/tourStage/}&\lstinline/"1rd"/&First round (of a general tournament)\\*\cline{2-3}% 
+					&\lstinline/"2rd"/&Second round (of a general tournament)\\*\cline{2-3}% 
+					&\lstinline/"qtf"/&Quarterfinal (of a general tournament)\\*\cline{2-3}% 
+					&\lstinline/"smf"/&Semifinal (of a general tournament)\\*\cline{2-3}% 
+					&\lstinline/"fin"/&Final (of a general tournament)\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-reg"/}&M League Regular Season \newline% 
+						\textjapanese{Mリーグ　レギュラーシーズン}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-sfs"/}&M League Semifinal Series \newline% 
+						\textjapanese{Mリーグ　セミファイナルシーリズ}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-fns"/}&M League Final Series \newline% 
+						\textjapanese{Mリーグ　ファイナルシーリズ}\\\hline% 
+					\multirow{3}{*}{\lstinline/matchPlace/}&\multirow{3}{*}{\lstinline/"mlg-std"/}&M League Studio / \textjapanese{Mリーグスタジオ}\newline% 
+						2-1-16 Kaigan, Minato City, Tokyo, Japan\newline% 
+						\textjapanese{日本東京港区海岸2-1-16}\\\hline% 
+					\multirow{16}{*}{\lstinline/plyerTeam/}&\multirow{2}{*}{\lstinline/"mlg-drn"/}&M League - Akasaka Drivens\newline% 
+						\textjapanese{Mリーグ　赤坂ドリブンズ}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-exf"/}&M League - EX Furinkazan\newline% 
+						\textjapanese{Mリーグ　EX風林火山}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-skn"/}&M League - Kadokawa Sakura Knights\newline% 
+						\textjapanese{Mリーグ　KADOKAWAサクラナイツ}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-mfc"/}&M League - Konami Mahjong Fight Club\newline% 
+						\textjapanese{Mリーグ　KONAMI麻雀格闘倶楽部}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-abm"/}&M League - Shibuya Abemas\newline% 
+						\textjapanese{Mリーグ　渋谷ABEMAS}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-phx"/}&M League - Sega Sammy Phoenix\newline% 
+						\textjapanese{Mリーグ　セガサミーフェニックス}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-rdn"/}&M League - Team Raiden\newline% 
+						\textjapanese{Mリーグ　TEAM 雷電}\\*\cline{2-3}% 
+					&\multirow{2}{*}{\lstinline/"mlg-prt"/}&M League - U-Next Pirates\newline% 
+						\textjapanese{Mリーグ　U-NEXT Pirates}\\\hline% 
+					\multirow{9}{*}{\lstinline/plyerAffil/}&\lstinline/"none"/&No known affiliation ($\neq$ no data)\\*\cline{2-3}% 
+					&\lstinline/"saikouisen"/&\textjapanese{最高位戦日本プロ麻雀協会}\\*\cline{2-3}% 
+					&\lstinline/"prokyoukai"/&\textjapanese{日本プロ麻雀協会}\\*\cline{2-3}% 
+					&\lstinline/"prorenmei"/&\textjapanese{日本プロ麻雀連盟}\\*\cline{2-3}% 
+					&\lstinline/"rmu"/&\textjapanese{RMU}\\*\cline{2-3}% 
+					&\lstinline/"rengoumu"/&\textjapanese{麻将連合-μ-}\\*\cline{2-3}% 
+					&\lstinline/"101"/&\textjapanese{101競技連盟}\\*\cline{2-3}% 
+					&\lstinline/"kishikai"/&\textjapanese{日本プロ麻雀棋士会}\\*\cline{2-3}% 
+					&\lstinline/"zennihon"/&\textjapanese{全日本麻雀協会}\\\hline% 
+				\end{longtable*}% 
+				\caption{All shorthand tokens used in paifu files. \label{tab:shtkn}}% 
+			\end{table}% 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Frame ID}\label{subsubsec:frameid}% 
+		% 
+			\paragraph*{}In each match of Japanese mahjong, there are many ``frames''\footnote{I borrowed this terminology from snooker because I did not see any other translation of it into English. } (\textjapanese{局} / \textjapanese{きょく}) played. In Japanese, they are usually named in sequence from \textjapanese{東一局} (East 1) to \textjapanese{東四局} (East 4), then from \textjapanese{南一局} (South 1) to \textjapanese{南四局} (South 4); however, they sometimes have $n$\textjapanese{本場} (honba) suffixed. Therefore, it is important to have a uniform way to refer to the frames in order to ease parsing. % 
+			% 
+			\rulePar{}\lstinline/frameId = frameSeq "-" frameHonba/% 
+			% 
+			\rulePar{}\lstinline/frameSeq = frameWind frameNum/% 
+			% 
+			\rulePar{}\lstinline/frameWind = "E" | "S" | "W" | "N"/% 
+			% 
+			\rulePar{}\lstinline/frameNum = "1" | "2" | "3" | "4"/% 
+			% 
+			\rulePar{}\lstinline/frameHonba/ refers to the honba number of the frame. It is an integer${} \ge 0$. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Points representations}\label{subsubsec:pt}% 
+		% 
+			\rulePar{}\lstinline/pt/ is a 1-decimal-place number, whose value is $\frac{1}{1000}$ of a point inside a match. % 
+			% 
+			\paragraph*{}Because Japanese mahjong is highly dependent on the points used in the match, we have to use some kind of convention to represent this information. This convention makes the points in te paifu to be in the same size as most tournaments. If it is not clear enough, in our notation, the value of a riichi stick (\textjapanese{立直棒}) is represented as $1.0$, while each honba stick (\textjapanese{本場棒}) typically adds $0.3$ to the winner. % 
+			% 
+			\rulePar{}\lstinline/ptTour = "(" [ptTourPrsnl]^(0-1) "," [ptTourTeam]^(0-1) ")"/% 
+			% 
+			\rulePar{}\lstinline/ptTourPrsnl = pt/% 
+			% 
+			\rulePar{}\lstinline/ptTourTeam = pt/% 
+			% 
+			\paragraph*{}\lstinline/ptTour/ represents the personal and team tournament points. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Tile representations}\label{subsubsec:tile}% 
+		% 
+			\rulePar{}\lstinline/realTiles = numTiles | wordTiles | unknownTiles/% 
+			% 
+			\rulePar{}\lstinline/numTiles = circleTiles | bambooTiles | charTiles/% 
+			% 
+			\rulePar{}\lstinline/circleTiles = /\\*{}% 
+			\indentRule{}\lstinline/    "1p" | "2p" | "3p" | "4p" | "5p" | "6p" | "7p" | "8p" | "9p" | "0p"/% 
+			% 
+			\rulePar{}\lstinline/bambooTiles = /\\*{}% 
+			\indentRule{}\lstinline/    "1s" | "2s" | "3s" | "4s" | "5s" | "6s" | "7s" | "8s" | "9s" | "0s"/% 
+			% 
+			\rulePar{}\lstinline/charTiles = /\\*{}% 
+			\indentRule{}\lstinline/    "1m" | "2m" | "3m" | "4m" | "5m" | "6m" | "7m" | "8m" | "9m" | "0m"/% 
+			% 
+			\rulePar{}\lstinline/wordTiles = windTiles | dragonTiles/% 
+			% 
+			\rulePar{}\lstinline/windTiles = "ew" | "sw" | "ww" | "nw"/% 
+			% 
+			\rulePar{}\lstinline/dragonTiles = "wd" | "gd" | "rd"/% 
+			% 
+			\rulePar{}\lstinline/unknownTiles = "uk"/% 
+			% 
+			\paragraph*{}As mahjong paifus, there must be some representation for the mahjong tiles. The number tiles are self-evident; 0 represents the red five tiles. The suffix refers to \textit{p\/}inzu (\textjapanese{筒子} / \textjapanese{ピンズ}, the circle tiles), \textit{s\/}ouzu (\textjapanese{索子} / \textjapanese{ソウズ}, the bamboo tiles) and \textit{m\/}anzu (\textjapanese{萬子} / \textjapanese{マンズ}, the character tiles) respectively. The wind tiles have their first letter specifying direction, while the dragon tiles have their first letter specifying color (\textit{w\/}hite, \textit{g\/}reen and \textit{r\/}ed). An unknown tile refers to a tile which identity is unknown to the paifu recorders. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Hand representations}\label{subsubsec:hand}% 
+		% 
+			\rulePar{}\lstinline/hand = /\\*{}% 
+			\indentRule{}\lstinline/    "hnd[" [tileInHand]^(1-13) "," [tileTsumo]^(0-1) "," /\\*{}% 
+			\indentRule{}\lstinline/    [tileFuro]^(0-4) "]"/% 
+			% 
+			\rulePar{}\lstinline/tileInHand = realTiles/% 
+			% 
+			\rulePar{}There are no rules regarding the order of tiles in the \lstinline/tileInHand/ field. % 
+			% 
+			\rulePar{}\lstinline/tileTsumo = realTiles/% 
+			% 
+			\paragraph*{}\lstinline/tileTsumo/ refers to ``the 14th tile'' which the player gets in one's own round. When a player wins by ron, although the tile techneically does not count as tsumo, this field is still used to document that tile. % 
+			% 
+			\paragraph*{}In some cases this 14th tile might not be distinguished from the other tiles in hand. One common situation is at the beginning of a frame, when the dealer (\textjapanese{親}) may get all 14 tiles at once. In such cases, any one tile may go into this field, and the rest goes into \lstinline/tileInHand/. % 
+			% 
+			\rulePar{}\lstinline/tileFuro = furoChi | furoPon | furoKan/% 
+			% 
+			\paragraph*{}\lstinline/tileFuro/ documents f\={u}ro (\textjapanese{副露}) in the hand. % 
+			% 
+			\rulePar{}When there are more than one f\={u}ro, the newest one should be documented first, with them getting older down the list. % 
+			% 
+			\rulePar{}\lstinline/furoChi = "chi[" realTiles "," [tileChiHand]^(2-2) "]"/% 
+			% 
+			\rulePar{}\lstinline/tileChiHand = realTiles/% 
+			% 
+			\paragraph*{}\lstinline/furoChi/ refers to a f\={u}ro made by chi-ing a discard tile (\lstinline/tileChiIn/) from the player on the left (\textjapanese{上家}) with 2 tiles in you hand (\lstinline/tileChiHand/), forming a shuntsu (\textjapanese{順子}). % 
+			% 
+			\rulePar{}\lstinline/furoPon = "pon[" realTiles "," tileFrom "]"/% 
+			% 
+			\rulePar{}\lstinline/tileFrom = "k" | "t" | "s"/% 
+			% 
+			\paragraph*{}\lstinline/furoPon/ refers to a f\={u}ro made by pon-ing a discard tile from any other player when one have two other of the same tile in hand. The field \lstinline/tileFrom/ identifies the source of the tile: \lstinline/"k"/ for \textit{k\/}amicha (\textjapanese{上家}), the player on the left; \lstinline/"t"/ for \textit{t\/}oimen (\textjapanese{対面}), the player on the oppositeside of the table; and \lstinline/"s"/ for \textit{s\/}himocha (\textjapanese{下家}), the player on the right. % 
+			% 
+			\rulePar{}\lstinline/furoKan = furoDmk | furoKkn | furoAnk/% 
+			% 
+			\rulePar{}\lstinline/furoDmk = "dmk[" realTiles "," tileFrom "]"/% 
+			% 
+			\paragraph*{}\lstinline/furoDmk/ refers to a f\={u}ro made by daiminkan (\textjapanese{大明槓}), an action that can only be done when another player discards a tile which one has all the other three of the same tile in hand. % 
+			% 
+			\rulePar{}\lstinline/furoKkn = "kkn[" realTiles "," tileFrom "]"/% 
+			% 
+			\paragraph*{}\lstinline/furoKkn/ refers to a f\={u}ro made by kakan (\textjapanese{加槓}), an action that can only be performed when one has pon-ed a tile, and then draws the forth of that tile into hand. % 
+			% 
+			\rulePar{}\lstinline/furoAnk = "ank[" realTiles "]"/% 
+			% 
+			\paragraph*{}\lstinline/furoAnk/ refers to an ankan (\textjapanese{暗槓}), an action that can only performed when one has all four of a tile in hand. This technically does not count as a f\={u}ro, but it has the same effect of removing the tiles from the hand, so it is documented in the same way as a f\={u}ro. % 
+			% 
+%\clearpage{}% 
+\section{File properties}\label{sec:fileprop}% 
+% 
+	%\clearpage{}% 
+	\subsection{File extension}% 
+	% 
+		\rulePar{}The paifu files should bear the extension ``\texttt{.jmjp}'' . % 
+		% 
+		\paragraph*{}The extension refers to \textit{J\/}apanese \textit{m\/}ah\textit{j\/}ong \textit{p\/}aifu. A four-letter extension is chosen for reduced likelihood of clashing with other file extensions. % 
+		% 
+	%\clearpage{}% 
+	\subsection{File encoding}% 
+	% 
+		\rulePar{}The paifu files should be plain text files encoded in UTF-8. % 
+		% 
+		\paragraph*{}While many parts of the files would only require ASCII characters, the file can contain comments as well as other strings that might not be encodable using pure ASCII (eg names of players, which will most likely be in Japanese). UTF-8 is selected for its support of non-ASCII contents, as well as relative space efficiency over other unicode encodings over a predominantly ASCII plain text file. % 
+		% 
+		\rulePar{}The use of byte order mark (BOM) is not forbidden but is also not recommended. % 
+		% 
+		\rulePar{}Programs designed to read paifu files should ignore BOM at start of file if it exists. % 
+		% 
+		\rulePar{}Programs designed to write paifu files should not write BOM at start of file. % 
+		% 
+		\paragraph*{}The use of BOM in UTF-8 is not suggested. However, since some other programs (especially legacy ones) might insert BOM at the start of the file on creation, reader programs are expected to be able to handle its presence. However, the presence or absence of the mark should not have any effect on the reading of an otherwise syntactically correct paifu file. As for writer programs, they are expected not to insert the mark at anytime. If they are rewriting an existing file, the modified file should not contain the mark, regardless of whether it originally contained the mark or not. % 
+		% 
+	%\clearpage{}% 
+	\subsection{Whitespace}% 
+	% 
+		\rulePar{}Whitespaces are ignored except in string literals wrapped in a pair of double quotes. % 
+		% 
+%\clearpage{}% 
+\section{File structure}% 
+% 
+	\rulePar{}\lstinline/file = "jmjp[" version "]" [match]^(1-)/% 
+	% 
+	\rulePar{}It is strongly recommended \textit{against} including multiple matches in one single paifu file. % 
+	% 
+	\paragraph*{}While syntactically valid, it is not recommended to store more than one match in a single paifu file, for readbility and archive management concerns. However, if your use case strongly requires the storage of multiple matches within one single paifu file, you may do so. This also allow for simple merging and spliting of paifu files on demand. % 
+	% 
+	\paragraph*{}However, there must be at least one match in each paifu file. This restriction is imposed considering that a paifu file without a match is meaningless. % 
+	% 
+	\rulePar{}\lstinline/version = "0"/% 
+	% 
+	\paragraph*{}The version number in the paifu file refers to the big version number. Because the versioning of this standard employs semantic versioning, new versions breaking backward compatibility must increment the big version number, and add the corresponding entry here. % 
+	% 
+	\rulePar{}\lstinline/match = "(" preMatchInfo [frame]^(0-) postMatchInfo ")"/% 
+	% 
+	\paragraph*{}\lstinline/frame/ is not a necessary component of \lstinline/match/. While it might be counter-intuitive to allow matches without frame data in the paifu files, this arrangement allows for paifu files to document matches where the actual playing data are not available, but other match-related information exists (eg tournament point changes). This can further allow for homogenity in the layer of files in an archive of paifus. % 
+	% 
+	%\clearpage{}% 
+	\subsection{Pre-match information}% 
+	% 
+		\rulePar{}\lstinline/preMatchInfo = /\\*% 
+		\indentRule{}\lstinline/    [tourInfo]^(0-1) [matchTP]^(1-1) [recerInfo]^(0-) [plyerInfo]^(4-4) /\\*% 
+		\indentRule{}\lstinline/    [ptRule]^(0-1)/% 
+		% 
+		%\clearpage{}% 
+		\subsubsection{Tournament information}% 
+		% 
+			\rulePar{}\lstinline/tourInfo = /\\*% 
+			\indentRule{}\lstinline/    "tnm[" [tourName]^(0-1) "," [tourYear]^(0-1) "," [tourStage]^(0-1) /\\*% 
+			\indentRule{}\lstinline/    "," [matchNumInStage]^(0-1) "," [matchNumInDay]^(0-1) "]"/% 
+			% 
+			\rulePar{}\lstinline/tourName = "mlg" | strLit/% 
+			% 
+			\rulePar{}\lstinline/tourYear/ is the year in which the tournament began, in Gregorian calendar and in format YYYY. % 
+			% 
+			\rulePar{}\lstinline/tourStage = /\\*% 
+			\indentRule{}\lstinline/    "1rd" | "2rd" | "qtf" | "smf" | "fin" | "mlg-reg" | "mlg-sfs" | /\\*% 
+			\indentRule{}\lstinline/    "mlg-fns" | strLit/% 
+			% 
+			\rulePar{}\lstinline/matchNumInStage/ is the match number in the current stage, in arabic numerals. % 
+			% 
+			\rulePar{}\lstinline/matchNumInDay/ is the match number in the same day, in arabic numerals. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Match time and place}% 
+		% 
+			\rulePar{}\lstinline/matchTP = /\\*% 
+			\indentRule{}\lstinline/    "mtp[" [matchDate]^(0-1) "," [matchDayOfWk]^(0-1) "," /\\*% 
+			\indentRule{}\lstinline/    [matchTime]^(0-1) "," [matchPlace]^(0-1) "]"/% 
+			% 
+			\rulePar{}\lstinline/matchDate/ is the date of the day on which the match started, in the Gregorian calendar and in the format YYYYMMDD. % 
+			% 
+			\rulePar{}\lstinline/matchDayOfWk = "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat"/% 
+			% 
+			\rulePar{}\lstinline/matchTime/ is the time at which the match started, in local time and in 24-hour format as HHMM. % 
+			% 
+			\rulePar{}\lstinline/matchPlace = "mlg-std" | strLit/% 
+			% 
+			\paragraph*{}Note that \lstinline/matchDate/ and \lstinline/tourYear/ does not necessarily overlap. For example, the matches for M league 2018 extended well into 2019. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Recorder information}% 
+		% 
+			\rulePar{}\lstinline/recerInfo = "rec[" [recerName]^(0-1) "," [framesRecd]^(0-1) "]"/% 
+			% 
+			\paragraph*{}\lstinline/recerInfo/ records the information of the person who records the paifu. It is common for a whole match to be recored by the same person. However, some matches might have multiple people recording the match together, and some matches might have different recorder for different frames. Therefore, this piece of information is allowed to appear multiple times in \lstinline/preMatchInfo/, while also possessing a field for noting the frames this person is responsible for recording. This may also be used as a form of crediting the paifu writer/recorder. % 
+			% 
+			\rulePar{}\lstinline/recerName = name/% 
+			% 
+			\rulePar{}\lstinline/framesRecd = "all" | [frameId]^(0-)/% 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Player information}% 
+		% 
+			\rulePar{}\lstinline/plyerInfo = /\\*% 
+			\indentRule{}\lstinline/    "ply[" plyerId "," [plyerName]^(0-1) "," [plyerTeam]^(0-1) "," /\\*% 
+			\indentRule{}\lstinline/    [plyerAffil]^(0-1) "," [ptTourPrev]^(0-1) "]"/% 
+			% 
+			\rulePar{}\lstinline/plyerId = "0" | "1" | "2" | "3"/% 
+			% 
+			\paragraph*{}\lstinline/plyerId/ refers to the seating in frame \texttt{E1-0}. The person seating at the East seat (\textjapanese{東家}) is \lstinline/"0"/; South seat (\textjapanese{南家}), \lstinline/"1"/; West seat (\textjapanese{西家}), \lstinline/"2"/; and North seat (\textjapanese{北家}), \lstinline/"3"/. With this information, the seating arrangement in each frame can be determined easily. % 
+			% 
+			\rulePar{}There are no fixed order for the four \lstinline/plyerInfo/; however it is strongly recommended to list in ascending order of \lstinline/plyerId/. % 
+			% 
+			\rulePar{}\lstinline/plyerName = name/% 
+			% 
+			\rulePar{}\lstinline/plyerTeam = /\\*% 
+			\indentRule{}\lstinline/    "mlg-drn" | "mlg-exf" | "mlg-skn" | "mlg-mfc" | "mlg-abm" | /\\*% 
+			\indentRule{}\lstinline/    "mlg-phx" | "mlg-rdn" | "mlg-prt" | strLit/% 
+			% 
+			\rulePar{}\lstinline/plyerAffil = /\\*% 
+			\indentRule{}\lstinline/    "none" | "saikouisen" | "prokyoukai" | "prorenmei" | "rmu" | /\\*% 
+			\indentRule{}\lstinline/    "rengoumu" | "101" | "kishikai" | "zennihon" | strLit/% 
+			% 
+			\paragraph*{}The shorthand tokens of \lstinline/plyerAffil/ listed above provide for the professional associations as listed in Wikipedia\cite{wiki-proassn}. % 
+			% 
+			\rulePar{}Shorthand token \lstinline/"none"/ of field \lstinline/plyerAffil/ is used for ``no known affiliation''; for no data leave the whole field out. % 
+			% 
+			\rulePar{}\lstinline/ptTourPrev = ptTour/% 
+			% 
+			\paragraph*{}\lstinline/ptTourPrev/ represent the personal and team tournament points right before the match begins. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Point rules}% 
+		% 
+			\rulePar{}\lstinline/ptRule = "ptr[" ptStart "," ptRetn "," ptPostn "," ptHonba "]"/% 
+			% 
+			\rulePar{}\lstinline/ptStart = pt/% 
+			% 
+			\paragraph*{}\lstinline/ptStart/ refers to the points each player begins with (\textjapanese{配給原点}). Typical matches use $25.0$. % 
+			% 
+			\rulePar{}\lstinline/ptRetn = pt/% 
+			% 
+			\paragraph*{}\lstinline/ptRetn/ refers to the points each player needs to ``return'' after the match (\textjapanese{原点}). Typical matches use $30.0$. % 
+			% 
+			\paragraph*{}The excess ($4 \times{} {}$\lstinline/ptRetn/${} - 4 \times{} {}$\lstinline/ptStart/) is called \textjapanese{オカ} (oka) in Japanese, and is often awarded to the first place player. In rare cases that oka is negative, the corresponding amount is deducted from the fourth place player. % 
+			% 
+			\rulePar{}\lstinline/ptPostn = "(" ptPostn14 , ptPostn23 ")"/% 
+			% 
+			\rulePar{}\lstinline/ptPostn14 = pt/% 
+			% 
+			\rulePar{}\lstinline/ptPostn23 = pt/% 
+			% 
+			\paragraph*{}\lstinline/ptPostn/ refers to the points that player exchange based on their rankings in the match (\textjapanese{ウマ} / \textjapanese{順位点}). \lstinline/ptPostn14/ is the amount that the fourth place player gives to the first place player, while \lstinline/ptPostn23/ is the amount that the third place player gives to the second place player. It is usually the case that \lstinline/ptPostn14/${} > {}$\lstinline/ptPostn23/, such that the rankings do not change because of the exchange. % 
+			% 
+			\rulePar{}\lstinline/ptHonba = pt/% 
+			% 
+			\paragraph*{}This field refers to the additional point (\textjapanese{積み符}) for the winning hand per honba stick (\textjapanese{積み棒}). Typical matches use $0.3$, but a limited number of local rules might use $1.5$. % 
+			% 
+	%\clearpage{}% 
+	\subsection{Frame format}\label{subsec:frame}% 
+	% 
+		\rulePar{}\lstinline/frame = /\\*{}% 
+		\indentRule{}\lstinline/    "frm[" frameId "," [kyoutak]^(0-1) "," [dice]^(0-1) "," /\\*{}% 
+		\indentRule{}\lstinline/    [ptFrmStart]^(0-1) "," [dora]^(0-1) "," [frameFlow]^(0-) "," /\\*{}% 
+		\indentRule{}\lstinline/    [ptFrmEnd]^(0-1) "," [frameCmt]^(0-1) "]"/% 
+		% 
+		%\clearpage{}% 
+		\subsubsection{Before frame flow}\label{subsubsec:prefrmflow}% 
+		% 
+			\rulePar{}\lstinline/kyoutak = pt/% 
+			% 
+			\paragraph*{}\lstinline/kyoutak/ refers to the number of riichi stick left on the table (\textjapanese{供託}). Since each stick has a value of $1.0$, we use the point value to represent it. Note that the honba sticks does not count; this information is already encoded in \lstinline/frameId/. % 
+			% 
+			\rulePar{}\lstinline/dice = diceRes "-" diceRes/% 
+			% 
+			\rulePar{}\lstinline/diceRes = "1" | "2" | "3" | "4" | "5" | "6"/% 
+			% 
+			\paragraph*{}\lstinline/dice/ represents the results of the two dices separately. % 
+			% 
+			\rulePar{}\lstinline/ptFrmStart = "pfs[" pt ["," pt]^(3-3) "]"/% 
+			% 
+			\paragraph*{}\lstinline/ptFrmStart/ indicates the points each player has at the beginning of the frame, in the order of East seat, South seat, West seat and finally North seat. % 
+			% 
+			\rulePar{}\lstinline/dora = [realTiles]^(10-10)/% 
+			% 
+			\paragraph*{}\lstinline/dora/ documents the actual doras, not the indication tiles. The ten tiles should be arranged in the following order: normal dora, ura dora, kan dora 1, kan ura 1, kan dora 2, \dots{}, kan ura 4. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Frame flow}\label{subsubsec:frmflow}% 
+		% 
+			\rulePar{}\lstinline/frameFlow = /\\*{}% 
+			\indentRule{}\lstinline/    ["(" seat "," startHand ")"]^(4-4) [frameAct]^(0-) ["(" seat "," /\\*{}% 
+			\indentRule{}\lstinline/    endHand ")"]^(4-4)/% 
+			% 
+			\rulePar{}\lstinline/seat = "e" | "s" | "w" | "n"/% 
+			% 
+			\rulePar{}\lstinline/startHand = hand/% 
+			% 
+			\rulePar{}\lstinline/frameAct = "(" seat "," drawTile "," [discTile]^(0-1) ")"/% 
+			% 
+			\paragraph*{}\lstinline/frameAct/ represents a complete act from drawing tile to discarding tile. Except for special cases, there should always be a discard tile. % 
+			% 
+			\rulePar{}\lstinline/drawTile = realTiles | drawActs/% 
+			% 
+			\rulePar{}\lstinline/drawActs = actChi | actPon | actDmk | actRsn | actRon | actOya /% 
+			% 
+			\rulePar{}\lstinline/actChi = "ch[" [realTiles]^(2-2) "]"/% 
+			% 
+			\paragraph*{}\lstinline/actChi/ refers to the case where a player chi-ed the discard tile from the previous player. Therefore the chi-ing player will have to take out the 2 documented tiles from hand to finish the act. % 
+			% 
+			\rulePar{}\lstinline/actPon = "pn"/% 
+			% 
+			\rulePar{}\lstinline/actDmk = "dk"/% 
+			% 
+			\paragraph*{}\lstinline/actDmk/ refers to the case where a player has declared a daiminkan on the previous discard tile. There should be no discard tile in this \lstinline/frameAct/, and the next \lstinline/frameAct/ should also be by this player drawing an \lstinline/actRsn/. % 
+			% 
+			\rulePar{}\lstinline/actRsn = "rs[" realTiles "]"/% 
+			% 
+			\paragraph*{}\lstinline/actRsn/ refers to the case where a player did a kan in the previous \lstinline/frameAct/, and then drawed a rinshan tile (\textjapanese{嶺上牌}) as documented. % 
+			% 
+			\rulePar{}\lstinline/actRon = "ro"/% 
+			% 
+			\paragraph*{}\lstinline/actRon/ refers to the case where a player rons on the previous discard tile (or kakan tile for stealing kan (\textjapanese{搶槓})). If a player has declared ron, it should be documented, regardless of whether atama hane (\textjapanese{頭跳ね}) rules are in place. There should be no discard tile in this \lstinline/frameAct/. % 
+			% 
+			\rulePar{}\lstinline/actOya = "oy"/% 
+			% 
+			\paragraph*{}\lstinline/actOya/ refers to the case of the first round for the dealer. If the dealer starting hand already contains 14 tiles, then he/she would not draw an additional tile in the first round, in which case the draw tile would be substituted with \lstinline/actOya/. However, if the dealer start hand only have 13 tiles, then he/she would still draw a tile as usual. % 
+			% 
+			\rulePar{}\lstinline/discTile = realTiles | discActs/% 
+			% 
+			\rulePar{}\lstinline/discActs = actTmg | actKrg | actKkn | actAnk | actTsm | actRch/% 
+			% 
+			\rulePar{}\lstinline/actTmg = "tg"/% 
+			% 
+			\paragraph*{}\lstinline/actTmg/ refers to the case where a player has carried out tsumogiri (\textjapanese{ツモ切り}), or discarding the draw tile directly. It is specially documented because the act can imply meanings for other players on the table. % 
+			% 
+			\rulePar{}\lstinline/actKrg = "kg"/% 
+			% 
+			\paragraph*{}\lstinline/actKrg/ refers to the case where a player has carried out karagiri (\textjapanese{空切り}), or discarding a tile in hand that is identical to the draw tile. This act is often done to conceal tsumogiri, and thus it also carries special meaning, leading to it being coumented specially. % 
+			% 
+			\rulePar{}\lstinline/actKkn = "kk[" realTiles "]"/% 
+			% 
+			\paragraph*{}\lstinline/actKkn/ refers to the case where a player declares a kakan with the documented tile. Provided that the kakan stands (that is, no one steals it), the next \lstinline/frameAct/ should be by the same player, drawing an \lstinline/actRsn/. % 
+			% 
+			\rulePar{}\lstinline/actAnk = "ak[" realTiles "]"/% 
+			% 
+			\paragraph*{}\lstinline/actAnk/ refers to the case where a player declares an ankan with the documented tile. Provided that the ankan stands (that is, no one steals it), the next \lstinline/frameAct/ should be by the same player, drawing am \lstinline/actRsn/. It should be noted that ankan usually stands, since the limited variant of rules that alllows stealing ankan only allows kokushi (\textjapanese{国士無双}) to do so. % 
+			% 
+			\rulePar{}\lstinline/actTsm = "tm"/% 
+			% 
+			\paragraph*{}\lstinline/actTsm/ refers to the case where a player has won by tsumo on the draw tile of this \lstinline/frameAct/. % 
+			% 
+			\rulePar{}\lstinline/actRch = "rc[" realTiles "]"/% 
+			% 
+			\paragraph*{}\lstinline/actRch/ refers to the case where a player declares riichi on discarding the documented tile. % 
+			% 
+			\rulePar{}\lstinline/endHand = hand/% 
+			% 
+		%\clearpage{}% 
+		\subsubsection{After frame flow}\label{subsubsec:postfrmflow}% 
+		% 
+			\rulePar{}\lstinline/ptFrmEnd = "pfe[" pt ["," pt]^(3-3) "]"/% 
+			% 
+			\paragraph*{}\lstinline/ptFrmEnd/ is analogous to \lstinline/ptFrmStart/ except that it represents points at end of frame. % 
+			% 
+			\rulePar{}\lstinline/frameCmt = strLit/% 
+			% 
+			\paragraph*{}\lstinline/frameCmt/ is used for comments on the frame. % 
+			% 
+	%\clearpage{}% 
+	\subsection{Post-match information}% 
+	% 
+		\rulePar{}\lstinline/postMatchInfo = [ptMatchEnd]^(0-1) [ptTourNew]^(0-1)/% 
+		% 
+		\rulePar{}\lstinline/ptMatchEnd = "pme[" pt ["," pt]^(3-3) "]"/% 
+		% 
+		\paragraph*{}\lstinline/ptMatchEnd/ refers to the points each player has after all leftover kyoutak, oka and position points exchanges are dealt with. The points are arranged in ascending order of corresponding \lstinline/plyerId/. % 
+		% 
+		\rulePar{}\lstinline/ptTourNew = "ptn[" ptTour ["," ptTour]^(3-3) "]"/% 
+		% 
+		\paragraph*{}\lstinline/ptMatchEnd/ refers to the new personal and team tour points after the match, arranged in ascending order of corresponding \lstinline/plyerId/. % 
+		% 
+%\clearpage{}% 
+\section{To-do and possible extensions}% 
+% 
+	\begin{itemize}% 
+		\item{}This document may have many typos, which needs correction% 
+		\item{}A lot of explanations might be inadequte and needs to be expanded% 
+		\item{}The shorthand tokens currently only covers a subset of Japanese stuffs, but considering that Japanese mahjong is expanding and becoming international, more tokens might be beneficial% 
+	\end{itemize}% 
+	% 
+%\clearpage{}% 
+\begin{changelog}[% 
+	section=true% 
+	,sectioncmd={\section}% 
+	,title={Changelog}% 
+	,label={sec:changelog}% 
+]% 
+% 
+%%  %%  
+%%  %%  Changelog update guidelines 
+%%  %%  
+%%  %%  When updating, create a copy of the top version above it, 
+%%  %%  and then change the necessary fields in the new copy. 
+%%  %%  
+%%  %%  Also remember to replace the \currentVer{} and \releaseDate{} 
+%%  %%  in the old copy with the old version number and the old 
+%%  %%  release date, respectively. 
+%%  %%  
+%%  %%  Put email in author field as author=name <email> if possible, 
+%%  %%  except when the email appeared elsewhere in this document. 
+%%  %%  
+%%  %%  Before release, use date=Unreleased. 
+%%  %%  When releasing, use DTMdisplaydate with the correct date. 
+%%  %%  
+	\begin{version}[% 
+		version=\currentVer{}% 
+		,author={\github{ChemistMikeLam}}% 
+		,date=\releaseDate{}% 
+		,simple=true% 
+	]% 
+		\item{}Initial version% 
+	\end{version}% 
+	% 
+\end{changelog}% 
+% 
+%\clearpage{}% 
+\begin{thebibliography}{9}% 
+	\bibitem{wiki-proassn}% 
+		\url{https://ja.wikipedia.org/wiki/%E7%AB%B6%E6%8A%80%E9%BA%BB%E9%9B%80}. \\{}% 
+		Accessed \DTMdisplaydate{2020}{6}{21}{6}. % 
+\end{thebibliography}% 
+% 
+%\clearpage{}% 
+\printindex{}% 
+% 
+\end{document}% 
