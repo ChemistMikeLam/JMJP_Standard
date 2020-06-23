@@ -368,11 +368,11 @@
 		%\clearpage{}% 
 		\subsubsection{The \texttt{name} format}\label{subsubsec:name}% 
 		% 
-			\rulePar{}\lstinline/name = "[" [lname]^(0-1) "," [fname]^(0-1) "]"/% 
+			\rulePar{}\lstinline/name = "(" [lname]^(0-1) "," [fname]^(0-1) ")"/% 
 			% 
 			\rulePar{}\lstinline/lname = strLit/% 
 			% 
-			\rulePar{}\lstinline/fname strLit/% 
+			\rulePar{}\lstinline/fname = strLit/% 
 			% 
 			\paragraph*{}All human names in the file place the last name in front of the first name. % 
 			% 
