@@ -28,7 +28,7 @@
 %%     4th argument of \DTMdisplaydate is the day of week. 
 %%     0 - Mon, 1 - Tue, etc. Put -1 to omit it. 
 %%  
-\newcommand*{\currentVer}{1.0.0}% 
+\newcommand*{\currentVer}{1.0.0-β}% 
 \newcommand*{\releaseDate}{% 
 	Unreleased% 
 %	\DTMdisplaydate{2020}{06}{23}{1}% 
@@ -90,28 +90,55 @@
 \lstdefinelanguage{jmjp-ebnf}{% 
 	alsoletter={^|=}% 
 	,classoffset=0% 
-	,morekeywords={% Format 5 per row in dictionary order for readability
+	,morekeywords={% Format: 5 per row, group by first letter, in dictionary order
 		,actAnk,actChi,actDmk,actKkn,actKrg% 
 		,actOya,actPon,actRch,actRon,actRsn% 
-		,actTmg,actTsm,bambooTiles,charTiles,circleTiles% 
-		,dice,diceRes,discActs,discTile,dora% 
-		,dragonTiles,drawActs,drawTile,endHand,file% 
-		,fname,frame,frameAct,frameCmt,frameFlow% 
-		,frameHonba,frameId,frameNum,frameSeq,framesRecd% 
-		,frameWind,furoAnk,furoChi,furoDmk,furoKan% 
-		,furoKkn,furoPon,hand,kyoutak,lname%
-		,match,matchDate,matchDayOfWk,matchNumInDay,matchNumInStage% 
-		,matchPlace,matchTime,matchTP,name,numTiles% 
+		,actTmg,actTsm% 
+		% 
+		,bambooTiles% 
+		% 
+		,charTiles,circleTiles% 
+		% 
+		,dice,diceSep,diceTotal,discActs,discTile% 
+		,dora,dragonTiles,drawActs,drawTile% 
+		% 
+		,endHand% 
+		% 
+		,file,fname,frame,frameAct,frameCmt% 
+		,frameFlow,frameHonba,frameId,frameNum,frameSeq% 
+		,framesRecd,frameWind,furoAnk,furoChi,furoDmk% 
+		,furoKan,furoKkn,furoPon% 
+		% 
+		,hand,honorTiles% 
+		% 
+		,kyoutak% 
+		% 
+		,lname% 
+		% 
+		,match,matchDate,matchDayOfWk,matchNumInDay,matchNumInStage%
+		,matchPlace,matchTime,matchTP% 
+		%
+		,name,numTiles% 
+		% 
 		,plyerAffil,plyerId,plyerInfo,plyerName,plyerTeam% 
 		,postMatchInfo,preMatchInfo,pt,ptFrmEnd,ptFrmStart% 
 		,ptHonba,ptMatchEnd,ptPostn,ptPostn14,ptPostn23% 
-		,ptRetn,ptRule,ptStart,ptTour,ptTourNew% 
-		,ptTourPrev,ptTourPrsnl,ptTourTeam,realTiles,recerInfo% 
-		,recerName,seat,startHand,strLit,strNative% 
-		,strRoman,tileChiHand,tileChiIn,tileDmkHand,tileDmkIn% 
-		,tileFrom,tileFuro,tileInHand,tileKknIn,tilePonHand% 
-		,tilePonIn,tileTsumo,tourInfo,tourName,tourStage% 
-		,tourYear,unknownTiles,version,windTiles,wordTiles% 
+		,ptRetn,ptRule,ptStart,ptTenpai,ptTour% 
+		,ptTourNew,ptTourPrev,ptTourPrsnl,ptTourTeam% 
+		% 
+		,realTiles,recerInfo,recerName% 
+		% 
+		,seat,startHand,strLit,strNative,strRoman% 
+		% 
+		,tileChiHand,tileChiIn,tileDmkHand,tileDmkIn,tileFrom% 
+		,tileFuro,tileInHand,tileKknIn,tilePonHand,tilePonIn% 
+		,tileTsumo,tourInfo,tourName,tourStage,tourYear% 
+		% 
+		,unknownTiles% 
+		% 
+		,version% 
+		% 
+		,windTiles% 
 	}% 
 	,classoffset=2% 
 	,morekeywords={% Deprecated ones that appears in changelog comes here 
@@ -367,24 +394,26 @@
 		%\clearpage{}% 
 		\subsubsection{The \texttt{strLit} format}\label{subsubsec:strlit}% 
 		% 
+			\paragraph*{}The \lstinline/strLit/ format is used for (possibly) bilingual string literals in the paifu files. % 
+			% 
 			\rulePar{}\lstinline/strLit = ["snt[" strNative "]"]^(0-1) ["srm[" strRoman "]"]^(0-1)/% 
 			% 
 			\rulePar{}\lstinline/strNative/ is the relevant name in its native script, wrapped in a pair of double quotes. % 
 			% 
 			\rulePar{}\lstinline/strRoman/ is the relevant name romanized, wrapped in a pair of double quotes. % 
 			% 
-			\paragraph*{}The \lstinline/strLit/ format is used for (possibly) bilingual string literals in the paifu files. % 
+			\rulePar{}Text wrapped inside a pair of double quotes are parsed verbatim as string literals by the parser. If a double quote needs to appear inside such a string literal, escape it with a backslash before it; the parser shall remove the backslash when parsing. % 
 			% 
 		%\clearpage{}% 
 		\subsubsection{The \texttt{name} format}\label{subsubsec:name}% 
 		% 
+			\paragraph*{}All human names in the file place the last name in front of the first name. % 
+			% 
 			\rulePar{}\lstinline/name = "(" [lname]^(0-1) "," [fname]^(0-1) ")"/% 
 			% 
 			\rulePar{}\lstinline/lname = strLit/% 
 			% 
 			\rulePar{}\lstinline/fname = strLit/% 
-			% 
-			\paragraph*{}All human names in the file place the last name in front of the first name. % 
 			% 
 		%\clearpage{}% 
 		\subsubsection{Shorthand tokens}\label{subsubsec:shtkn}% 
@@ -481,7 +510,7 @@
 		%\clearpage{}% 
 		\subsubsection{Tile representations}\label{subsubsec:tile}% 
 		% 
-			\rulePar{}\lstinline/realTiles = numTiles | wordTiles | unknownTiles/% 
+			\rulePar{}\lstinline/realTiles = numTiles | honorTiles | unknownTiles/% 
 			% 
 			\rulePar{}\lstinline/numTiles = circleTiles | bambooTiles | charTiles/% 
 			% 
@@ -494,7 +523,7 @@
 			\rulePar{}\lstinline/charTiles = /\\*{}% 
 			\indentRule{}\lstinline/    "1m" | "2m" | "3m" | "4m" | "5m" | "6m" | "7m" | "8m" | "9m" | "0m"/% 
 			% 
-			\rulePar{}\lstinline/wordTiles = windTiles | dragonTiles/% 
+			\rulePar{}\lstinline/honorTiles = windTiles | dragonTiles/% 
 			% 
 			\rulePar{}\lstinline/windTiles = "ew" | "sw" | "ww" | "nw"/% 
 			% 
@@ -628,23 +657,24 @@
 	%\clearpage{}% 
 	\subsection{Pre-match information}% 
 	% 
-		\rulePar{}\lstinline/preMatchInfo = /\\*% 
-		\indentRule{}\lstinline/    [tourInfo]^(0-1) [matchTP]^(1-1) [recerInfo]^(0-) [plyerInfo]^(4-4) /\\*% 
+		\rulePar{}\lstinline/preMatchInfo = /\\*{}% 
+		\indentRule{}\lstinline/    [tourInfo]^(0-1) [matchTP]^(1-1) [recerInfo]^(0-) [plyerInfo]^(4-4) /\\*{}% 
 		\indentRule{}\lstinline/    [ptRule]^(0-1)/% 
 		% 
 		%\clearpage{}% 
 		\subsubsection{Tournament information}% 
 		% 
-			\rulePar{}\lstinline/tourInfo = /\\*% 
-			\indentRule{}\lstinline/    "tnm[" [tourName]^(0-1) "," [tourYear]^(0-1) "," [tourStage]^(0-1) /\\*% 
-			\indentRule{}\lstinline/    "," [matchNumInStage]^(0-1) "," [matchNumInDay]^(0-1) "]"/% 
+			\rulePar{}\lstinline/tourInfo = /\\*{}% 
+			\indentRule{}\lstinline/    "tnm[" [tourName]^(0-1) "," [tourYear]^(0-1) "," /\\*{}% 
+			\indentRule{}\lstinline/    [tourStage]^(0-1) "," [matchNumInStage]^(0-1) "," /\\*{}% 
+			\indentRule{}\lstinline/    [matchNumInDay]^(0-1) "]"/% 
 			% 
 			\rulePar{}\lstinline/tourName = "mlg" | strLit/% 
 			% 
 			\rulePar{}\lstinline/tourYear/ is the year in which the tournament began, in Gregorian calendar and in format YYYY. % 
 			% 
-			\rulePar{}\lstinline/tourStage = /\\*% 
-			\indentRule{}\lstinline/    "1rd" | "2rd" | "qtf" | "smf" | "fin" | "mlg-reg" | "mlg-sfs" | /\\*% 
+			\rulePar{}\lstinline/tourStage = /\\*{}% 
+			\indentRule{}\lstinline/    "1rd" | "2rd" | "qtf" | "smf" | "fin" | "mlg-reg" | "mlg-sfs" | /\\*{}% 
 			\indentRule{}\lstinline/    "mlg-fns" | strLit/% 
 			% 
 			\rulePar{}\lstinline/matchNumInStage/ is the match number in the current stage, in arabic numerals. % 
@@ -654,8 +684,8 @@
 		%\clearpage{}% 
 		\subsubsection{Match time and place}% 
 		% 
-			\rulePar{}\lstinline/matchTP = /\\*% 
-			\indentRule{}\lstinline/    "mtp[" [matchDate]^(0-1) "," [matchDayOfWk]^(0-1) "," /\\*% 
+			\rulePar{}\lstinline/matchTP = /\\*{}% 
+			\indentRule{}\lstinline/    "mtp[" [matchDate]^(0-1) "," [matchDayOfWk]^(0-1) "," /\\*{}% 
 			\indentRule{}\lstinline/    [matchTime]^(0-1) "," [matchPlace]^(0-1) "]"/% 
 			% 
 			\rulePar{}\lstinline/matchDate/ is the date of the day on which the match started, in the Gregorian calendar and in the format YYYYMMDD. % 
@@ -682,8 +712,8 @@
 		%\clearpage{}% 
 		\subsubsection{Player information}% 
 		% 
-			\rulePar{}\lstinline/plyerInfo = /\\*% 
-			\indentRule{}\lstinline/    "ply[" plyerId "," [plyerName]^(0-1) "," [plyerTeam]^(0-1) "," /\\*% 
+			\rulePar{}\lstinline/plyerInfo = /\\*{}% 
+			\indentRule{}\lstinline/    "ply[" plyerId "," [plyerName]^(0-1) "," [plyerTeam]^(0-1) "," /\\*{}% 
 			\indentRule{}\lstinline/    [plyerAffil]^(0-1) "," [ptTourPrev]^(0-1) "]"/% 
 			% 
 			\rulePar{}\lstinline/plyerId = "0" | "1" | "2" | "3"/% 
@@ -694,12 +724,12 @@
 			% 
 			\rulePar{}\lstinline/plyerName = name/% 
 			% 
-			\rulePar{}\lstinline/plyerTeam = /\\*% 
-			\indentRule{}\lstinline/    "mlg-drn" | "mlg-exf" | "mlg-skn" | "mlg-mfc" | "mlg-abm" | /\\*% 
+			\rulePar{}\lstinline/plyerTeam = /\\*{}% 
+			\indentRule{}\lstinline/    "mlg-drn" | "mlg-exf" | "mlg-skn" | "mlg-mfc" | "mlg-abm" | /\\*{}% 
 			\indentRule{}\lstinline/    "mlg-phx" | "mlg-rdn" | "mlg-prt" | strLit/% 
 			% 
-			\rulePar{}\lstinline/plyerAffil = /\\*% 
-			\indentRule{}\lstinline/    "none" | "saikouisen" | "prokyoukai" | "prorenmei" | "rmu" | /\\*% 
+			\rulePar{}\lstinline/plyerAffil = /\\*{}% 
+			\indentRule{}\lstinline/    "none" | "saikouisen" | "prokyoukai" | "prorenmei" | "rmu" | /\\*{}% 
 			\indentRule{}\lstinline/    "rengoumu" | "101" | "kishikai" | "zennihon" | strLit/% 
 			% 
 			\paragraph*{}The shorthand tokens of \lstinline/plyerAffil/ listed above provide for the professional associations as listed in Wikipedia\cite{wiki-proassn}. % 
@@ -713,7 +743,8 @@
 		%\clearpage{}% 
 		\subsubsection{Point rules}% 
 		% 
-			\rulePar{}\lstinline/ptRule = "ptr[" ptStart "," ptRetn "," ptPostn "," ptHonba "]"/% 
+			\rulePar{}\lstinline/ptRule = /\\*{}% 
+			\indentRule{}\lstinline/    "ptr[" ptStart "," ptRetn "," ptPostn "," ptHonba "," ptTenpai "]"/% 
 			% 
 			\rulePar{}\lstinline/ptStart = pt/% 
 			% 
@@ -735,7 +766,11 @@
 			% 
 			\rulePar{}\lstinline/ptHonba = pt/% 
 			% 
-			\paragraph*{}This field refers to the additional point (\textjapanese{積み符}) for the winning hand per honba stick (\textjapanese{積み棒}). Typical matches use $0.3$, but a limited number of local rules might use $1.5$. % 
+			\paragraph*{}\lstinline/ptHonba/ refers to the additional point (\textjapanese{積み符}) for the winning hand per honba stick (\textjapanese{積み棒}). Typical matches use $0.3$, but a limited number of local rules might use $1.5$. % 
+			% 
+			\rulePar{}\lstinline/ptTenpai = pt/% 
+			% 
+			\paragraph*{}\lstinline/ptTenpai/ refers to the total point flow when a frame is ended with no winner. In this situation, players not in the state of tenpai (\textjapanese{ノーテン}) needs to pay players in the state of tenpai (\textjapanese{テンパイ}). The amount of point gain (or equivalently, loss) adds up to \lstinline/ptTenpai/. Typical matches use $3.0$. % 
 			% 
 	%\clearpage{}% 
 	\subsection{Frame format}\label{subsec:frame}% 
@@ -750,13 +785,16 @@
 		% 
 			\rulePar{}\lstinline/kyoutak = pt/% 
 			% 
-			\paragraph*{}\lstinline/kyoutak/ refers to the number of riichi stick left on the table (\textjapanese{供託}). Since each stick has a value of $1.0$, we use the point value to represent it. Note that the honba sticks does not count; this information is already encoded in \lstinline/frameId/. % 
+			\paragraph*{}\lstinline/kyoutak/ refers to the number of riichi stick left on the table (\textjapanese{供託}) at the start of the frame. Since each stick has a value of $1.0$, we use the point value to represent it. Note that the honba sticks does not count; this information is already encoded in \lstinline/frameId/. % 
 			% 
-			\rulePar{}\lstinline/dice = diceRes "-" diceRes/% 
+			\rulePar{}\lstinline/dice = [diceSep "-" diceSep]^(1-1) | diceTotal/% 
 			% 
-			\rulePar{}\lstinline/diceRes = "1" | "2" | "3" | "4" | "5" | "6"/% 
+			\rulePar{}\lstinline/diceSep = "1" | "2" | "3" | "4" | "5" | "6"/% 
 			% 
-			\paragraph*{}\lstinline/dice/ represents the results of the two dices separately. % 
+			\rulePar{}\lstinline/diceTotal = /\\*{}% 
+			\indentRule{}\lstinline/    "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" /% 
+			% 
+			\paragraph*{}\lstinline/dice/ represents the results of the dices, either as the two dices separately (\lstinline/diceSep/) or as their sum (\lstinline/diceTotal/). % 
 			% 
 			\rulePar{}\lstinline/ptFrmStart = "pfs[" pt ["," pt]^(3-3) "]"/% 
 			% 
@@ -909,7 +947,9 @@
 		,date=\releaseDate{}% 
 	]% 
 		\added{}% 
-			\item{}Added requirement for software to be able to parse all sorthand tokens in a supported version. % 
+			\item{}Added additional field \lstinline/ptTenpai/ in \lstinline/ptRule/. % 
+			\item{}Added representation type \lstinline/diceTotal/ for dice results of frames. % 
+			\item{}Added requirement for software to be able to parse all shorthand tokens in a supported version. % 
 			\item{}Added functionality of file comments that would be ignored by parsers. % 
 			\item{}(For future use) Added a new class and corresponding style of identifiers, for when some keywords becomes deprecated but still needs formatting in changelog. % 
 		\changed{}% 
