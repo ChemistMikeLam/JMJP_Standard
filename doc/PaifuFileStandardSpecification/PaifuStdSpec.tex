@@ -815,6 +815,8 @@
 			% 
 			\rulePar{}\lstinline/startHand = hand/% 
 			% 
+			\paragraph*{}While there are no mandatory order for \lstinline/startHand/, it is strongly advised to list the four hands in order from East, South, West to North. % 
+			% 
 			\rulePar{}\lstinline/frameAct = "(" seat "," drawTile "," [discTile]^(0-1) ")"/% 
 			% 
 			\paragraph*{}\lstinline/frameAct/ represents a complete act from drawing tile to discarding tile. Except for special cases, there should always be a discard tile. % 
@@ -839,7 +841,7 @@
 			% 
 			\paragraph*{}\lstinline/actRsn/ refers to the case where a player did a kan in the previous \lstinline/frameAct/, and then drawed a rinshan tile (\textjapanese{嶺上牌}) as documented. % 
 			% 
-			\rulePar{}\lstinline/actRon = "ro"/% 
+			\rulePar{}\lstinline/actRon = "rn"/% 
 			% 
 			\paragraph*{}\lstinline/actRon/ refers to the case where a player rons on the previous discard tile (or kakan tile for stealing kan (\textjapanese{搶槓})). If a player has declared ron, it should be documented, regardless of whether atama hane (\textjapanese{頭跳ね}) rules are in place. There should be no discard tile in this \lstinline/frameAct/. % 
 			% 
@@ -918,6 +920,11 @@
 	deleteindex=[1][keywords]% 
 }% 
 %\clearpage{}% 
+\section{License}\label{sec:license}% 
+% 
+	\paragraph*{}This documentation is licensed under the GNU FDL v1.3 or later, with no invariant sections and no cover text. A verbatim copy of the license can be found in this repository. % 
+	% 
+%\clearpage{}% 
 \begin{changelog}[% 
 	section=true% 
 	,sectioncmd={\section}% 
@@ -947,12 +954,14 @@
 		,date=\releaseDate{}% 
 	]% 
 		\added{}% 
-			\item{}Added additional field \lstinline/ptTenpai/ in \lstinline/ptRule/. % 
-			\item{}Added representation type \lstinline/diceTotal/ for dice results of frames. % 
-			\item{}Added requirement for software to be able to parse all shorthand tokens in a supported version. % 
-			\item{}Added functionality of file comments that would be ignored by parsers. % 
-			\item{}(For future use) Added a new class and corresponding style of identifiers, for when some keywords becomes deprecated but still needs formatting in changelog. % 
+			\item{}Additional field \lstinline/ptTenpai/ in \lstinline/ptRule/. % 
+			\item{}Representation type \lstinline/diceTotal/ for dice results of frames. % 
+			\item{}Requirement for software to be able to parse all shorthand tokens in a supported version. % 
+			\item{}Functionality of file comments that would be ignored by parsers. % 
+			\item{}A license section (Section \ref{sec:license}) regarding the license of this standard document. % 
+			\item{}(For future use) A new class and corresponding style of identifiers, for when some keywords becomes deprecated but still needs formatting in changelog. % 
 		\changed{}% 
+			\item{}\lstinline/actRon/ now uses \lstinline/"rn"/ instead of \lstinline/"ro"/, allowing it to be consistent with other \lstinline/drawActs/ and \lstinline/discActs/. % 
 			\item{}\lstinline/version/ now refers to the \texttt{big.small} version string instead of big version only. % 
 			\item{}Representations of \lstinline/furoPon/, \lstinline/furoDmk/, \lstinline/furoKkn/, \lstinline/furoAnk/; \lstinline/actPon/, \lstinline/actDmk/, \lstinline/actAnk/ have been changed to accomodate the possibility of red five tiles in them. % 
 			\item{}\lstinline/name/ now uses parenthesis instead of square brackets to surround \lstinline/lname/ and \lstinline/fname/. % 

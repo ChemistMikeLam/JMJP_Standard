@@ -22,4 +22,6 @@ For detailed specifications please refer to the specification files, located in 
 
 ## License
 
-All programs in this repository are released as free software. They are licensed under the GNU GPL v3.0. A [verbatim copy of the license](./LICENSE) is available in this repository. 
+All programs in this repository are released as free software. They are licensed under the GNU GPL v3.0 or later. A [verbatim copy of the license](./license/GPLv3.0.txt) is available in this repository. 
+
+The standard specification, along with other documentations, are released under the GNU FDL v1.3 or later. A [verbatim copy of the license](./license/FDLv1.3.txt) is available in thisrepositry. 
