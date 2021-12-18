@@ -350,14 +350,28 @@
 %\clearpage{}% 
 \section{Introduction}% 
 % 
-	\paragraph*{}Japanese mahjong, also known as riichi mahjong, among other names, is a variant of mahjong originating and popular in Japan. Its popularity outside of Japan is also rising due to its less reliance on luck, as well as promotions by individuals and popular culture works. The establishment of the M league in 2018 pushes it further as a competitive sport aiming for inclusion in the olympics. % 
+	\subsection{Background}\label{subsec:bg}% 
 	% 
-	\paragraph*{}As a competitive game of skills, paifus (\textjapanese{牌譜} / \textjapanese{ぱいふ}), or records of play, are very important for this game, just like they are for chess, go, shogi, and other games in this genre. Paifus of professional players can often be found at archives of professional player associations and match organisers, while various online Japanese mahjong platforms also provide for paifu service for its players, with or without charge. % 
+		\paragraph*{}Japanese mahjong, also known as riichi mahjong, among other names, is a variant of mahjong originating and popular in Japan. Its popularity outside of Japan is also rising due to its less reliance on luck, as well as promotions by individuals and popular culture works. The establishment of the M league in 2018 pushes it further as a competitive sport aiming for inclusion in the olympics. % 
+		% 
+		\paragraph*{}As a competitive game of skills, paifus (\textjapanese{牌譜} / \textjapanese{ぱいふ}), or records of play, are very important for this game, just like they are for chess, go, shogi, and other games in this genre. Paifus of professional players can often be found at archives of professional player associations and match organisers, while various online Japanese mahjong platforms also provide for paifu service for its players, with or without charge. % 
+		% 
+		\paragraph*{}However, (from limited google searches) there seems to lack an open standard for digitally storing paifus in a computer-readable fashion. Many paifus still only exist offline, and for those online, each vendor seem to have their own in-house non-disclosed standards. This is detrimental to the development of the sport, as the rise of popularity of the sport would unevitably require paifus to be publically available and transmittable using a common standard. % 
+		% 
+	%\clearpage{}% 
+	\subsection{Properties of this standard}\label{subsec:properties}% 
 	% 
-	\paragraph*{}However, (from limited google searches) there seems to lack an open standard for digitally storing paifus in a computer-readable fashion. Many paifus still only exist offline, and for those online, each vendor seem to have their own in-house non-disclosed standards. This is detrimental to the development of the sport, as the rise of popularity of the sport would unevitably require paifus to be publically available and transmittable using a common standard. % 
+		\paragraph*{}While not posing as the perfect solution, this document aims to provide a description for documenting paifus in a computer-readable format in an open standard, upon which paifus can be recorded, transmitted digitally, and viewed through open- (and less preferrably closed-) source softwares implemented base on this standard. % 
+		% 
+		\paragraph*{}In order to achieve this goal more easily, the paifu file format shall have certain properties. The paifu files should have a format that is optimal for computers to parse unambiguously, since the paifu files are mainly meant for consumption by softwares. However, it is also preferrable to preserve a certain level of human readability, such that in the rare case of a human user hoping to read or edit the paifu files by hand, it would still be possible. Since computer storage has became increasingly cheaper over the years, there shall not be need to keeping the files extremely small; however there is also no need to pointlessly inflate the file sizes. Finally, the format shall have the capacity to record as much detail as possible for the recreation of the matches, while also allowing for information to be omitted where it is not available or not applicable. % 
+		% 
+		\paragraph*{}While binary formats are often used to concisely and accurately represent data for software, it obviously does not have much human readability. By using a text file fornat, the file would be more readable for human, while not being much more harder for computers to parse. To ensure that softwares could parse the format with ease, fields of data have been separated with commas and semicolons, with groupings using parentheses and square brackets. Data fields have been created to record the finest possible detail, though most of the fields can be safely left empty when appropriate. % 
+		% 
+	%\clearpage{}% 
+	\subsection{Outline}\label{subsec:outline}% 
 	% 
-	\paragraph*{}While not posing as the perfect solution, this document aims to provide a description for documenting paifus in a computer-readable format in an open standard, upon which paifus can be recorded, transmitted digitally, and viewed through open- (and less preferrably closed-) source softwares implemented base on this standard. % 
-	% 
+	\paragraph*{}In the following sections, the paifu pilfe format will be documented in detail. Section~\ref{sec:gen} would introduce the general notations used to describe the parts of the file format, before defining a few recurring components of the format. Section~\ref{sec:fileprop} would then specify certain attributes of the paifu files. Finally, Section~\ref{sec:filestruct} would document the internal structure of the paifu files. % 
+		% 
 %\clearpage{}% 
 \section{General notations}\label{sec:gen}% 
 % 
@@ -636,7 +650,7 @@
 		\paragraph*{}This provides for C-style comments that are ignored by parsers, which might be useful for hand-written files. Do not confuse this with the \lstinline/frameCmt/ field explained below in Section~\ref{subsubsec:postfrmflow}; this field contains comment that the parser would read verbatim as strings. % 
 		% 
 %\clearpage{}% 
-\section{File structure}% 
+\section{File structure}\label{sec:filestruct}% 
 % 
 	\rulePar{}\lstinline/file = "jmjp[" version "]" [match]^(1-)/% 
 	% 
@@ -903,16 +917,6 @@
 		% 
 		\paragraph*{}\lstinline/ptMatchEnd/ refers to the new personal and team tour points after the match, arranged in ascending order of corresponding \lstinline/plyerId/. % 
 		% 
-%\clearpage{}% 
-\section{To-do and possible extensions}% 
-% 
-	\begin{itemize}% 
-		\item{}This document may have many typos, which needs correction% 
-		\item{}A lot of explanations might be inadequte and needs to be expanded% 
-		\item{}The shorthand tokens currently only covers a subset of Japanese stuffs, but considering that Japanese mahjong is expanding and becoming international, more tokens might be beneficial% 
-	\end{itemize}% 
-	% 
-% 
 \appendix{}% 
 \clearpage{}% 
 %Do not index backmatter
@@ -954,7 +958,8 @@
 		,date=\releaseDate{}% 
 	]% 
 		\changed{}% 
-			\item{}TBC% 
+			\item{}Enriched introduction section% 
+			\item{}More TBC% 
 	\end{version}% 
 	% 
 	\begin{version}[% 
@@ -987,6 +992,16 @@
 	\end{version}% 
 	% 
 \end{changelog}% 
+% 
+%\clearpage{}% 
+\section{To-do and possible extensions}% 
+% 
+	\begin{itemize}% 
+		\item{}This document may have many typos, which needs correction% 
+		\item{}A lot of explanations might be inadequte and needs to be expanded% 
+		\item{}The shorthand tokens currently only covers a subset of Japanese stuffs, but considering that Japanese mahjong is expanding and becoming international, more tokens might be beneficial% 
+	\end{itemize}% 
+	% 
 % 
 %\clearpage{}% 
 \begin{thebibliography}{9}% 
