@@ -122,10 +122,9 @@
 		% 
 		,plyerAffil,plyerId,plyerInfo,plyerName,plyerTeam% 
 		,postMatchInfo,preMatchInfo,pt,ptFrmEnd,ptFrmStart% 
-		,ptHonba,ptMatchEnd,ptPostn,ptPostn1,ptPostn2% 
-		,ptPostn3,ptPostn4,ptPostnCase,ptPostnCmt,ptRetn% 
-		,ptRule,ptStart,ptTenpai,ptTour,ptTourNew% 
-		,ptTourPrev,ptTourPrsnl,ptTourTeam% 
+		,ptHonba,ptMatchEnd,ptPostn,ptPostnCase,ptPostnCmt% 
+		,ptRetn,ptRule,ptStart,ptTenpai,ptTour% 
+		,ptTourNew,ptTourPrev,ptTourPrsnl,ptTourTeam% 
 		% 
 		,realTiles,recerInfo,recerName% 
 		% 
@@ -773,23 +772,13 @@
 			% 
 			\rulePar{}\lstinline/ptPostn = [ptPostnCase]^(1-)/% 
 			% 
-			\rulePar{}\lstinline/ptPostnCase = /\\*{}% 
-			\indentRule{}\lstinline/    "ppc[" ptPostnCmt "," ptPostn1 "," ptPostn2 "," ptPostn3 "," /\\*{}% 
-			\indentRule{}\lstinline/    ptPostn4 "]"/% 
+			\rulePar{}\lstinline/ptPostnCase = "ppc[" ptPostnCmt ["," pt]^(4-4) "]"/% 
 			% 
 			\rulePar{}\lstinline/ptPostnCmt = strLit/% 
 			%
-			\rulePar{}\lstinline/ptPostn1 = pt/% 
+			\paragraph*{}\lstinline/ptPostn/ refers to the points that player exchange based on their rankings in the match (\textjapanese{ウマ} / \textjapanese{順位点}) separated into cases, each documented in a \lstinline/ptPostnCase/. Each \lstinline/ptPostnCase/ first include a \lstinline/ptPostnCmt/, which is a \lstinline/strLit/ comment describing the condition to which this \lstinline/ptPostnCase/ applies to. Next follows a series of 4 \lstinline/pt/s which denotes the point changes to each player when this case is applied, arranged in the order of first place, second place, third place and fourth place. % 
 			% 
-			\rulePar{}\lstinline/ptPostn2 = pt/% 
-			% 
-			\rulePar{}\lstinline/ptPostn3 = pt/% 
-			% 
-			\rulePar{}\lstinline/ptPostn4 = pt/% 
-			% 
-			\paragraph*{}\lstinline/ptPostn/ refers to the points that player exchange based on their rankings in the match (\textjapanese{ウマ} / \textjapanese{順位点}) separated into cases, each documented in a \lstinline/ptPostnCase/. Each \lstinline/ptPostnCase/ first include a \lstinline/ptPostnCmt/, which is a \lstinline/strLit/ comment describing the condition to which this \lstinline/ptPostnCase/ applies to. Next follows a series of 4 \lstinline/pt/s which denotes the point changes to each player when this case is applied, with \lstinline/ptPostn1/ applying to the first place player, \lstinline/ptPostn2/ to the second place player, \lstinline/ptPostn3/ to the third place player, and \lstinline/ptPostn4/ to the fourth place player. % 
-			% 
-			\paragraph*{}In many torunaments only 1 case exists, which is applied in all conditions. Some tournaments have more complicated systems in which they select which case to apply base on various conditions. In either case, the relations \lstinline/ptPostn1/${} \geq{} {}$\lstinline/ptPostn2/${} \geq{} {}$\lstinline/ptPostn3/${} \geq{} {}$\lstinline/ptPostn4/ and \lstinline/ptPostn1/${} + {}$\lstinline/ptPostn2/${} + {}$\lstinline/ptPostn3/${} + {}$\lstinline/ptPostn4/${} = 0$ usually holds. % 
+			\paragraph*{}In many torunaments only 1 case exists, which is applied in all conditions. Some tournaments have more complicated systems in which they select which case to apply base on various conditions. In either case, the relations \lstinline/pt/${}_1 \geq{} {}$\lstinline/pt/${}_2 \geq{} {}$\lstinline/pt/${}_3 \geq{} {}$\lstinline/pt/${}_4$ and \lstinline/pt/${}_1 + {}$\lstinline/pt/${}_2 + {}$\lstinline/pt/${}_3 + {}$\lstinline/pt/${}_4 = 0$ usually holds. % 
 			% 
 			\rulePar{}\lstinline/ptHonba = pt/% 
 			% 
