@@ -797,7 +797,7 @@
 		\indentRule{}\lstinline/    "frm[" frameId "," [kyoutak]^(0-1) "," [ptFrmStart]^(0-1) "," /\\*{}% 
 		\indentRule{}\lstinline/    [frameFlow]^(0-) "," [ptFrmEnd]^(0-1) "," [frameCmt]^(0-1) "]"/% 
 		% 
-		\paragraph*{}A \lstinline/frame/ records the details of a single frame in the match. All elements except \lstinline/frameId/ are optional. For \lstinline/frameFlow/, it usually appears only once, if it ever appears. This is because a frame with the same \lstinline/frameId/ is usually only played once in one match. However, in some (rare) cases where some player(s) violates the rules, the rules may stipulate that the affected frame be null and void, and the frame starts afresh with the same \lstinline/frameId/, possibly with point penalties to the player(s) at fault. In such case, since we disallow the inclusion of multiple frames with the same \lstinline/frameId/ in the same \lstinline/match/, we allow more than one \lstinline/frameFlow/ within one \lstinline/frame/, following chronological order. It would be good practice to note such incidents in the \lstinline/frameCmt/ field. % 
+		\paragraph*{}A \lstinline/frame/ records the details of a single frame in the match. All elements except \lstinline/frameId/ are optional. For \lstinline/frameFlow/, it usually appears only once, if it ever appears. This is because a frame with the same \lstinline/frameId/ is usually only played once in one match. However, in some (rare) cases where some player(s) violates the rules, the rules may stipulate that the affected frame be null and void, and the frame starts afresh with the same \lstinline/frameId/, possibly with point penalties to the player(s) at fault. In such case, since we disallow the inclusion of multiple frames with the same \lstinline/frameId/ in the same \lstinline/match/, we allow more than one \lstinline/frameFlow/ within one \lstinline/frame/, usually following chronological order. It would be good practice to note such incidents in the \lstinline/frameCmt/ field. % 
 		% 
 		%\clearpage{}% 
 		\subsubsection{Before frame flow}\label{subsubsec:prefrmflow}% 
@@ -814,9 +814,8 @@
 		\subsubsection{Frame flow}\label{subsubsec:frmflow}% 
 		% 
 			\rulePar{}\lstinline/frameFlow = /\\*{}% 
-			\indentRule{}\lstinline/    "(" [dice]^(0-1) "," [dora]^(0-1) "," /\\*{}% 
-			\indentRule{}\lstinline/    ["(" seat "," startHand ")"]^(4-4) [frameAct]^(0-) /\\*{}% 
-			\indentRule{}\lstinline/    ["(" seat "," endHand ")"]^(4-4) ")"/% 
+			\indentRule{}\lstinline/    "(" [dice]^(0-1) "," [dora]^(0-1) ["(" seat "," startHand ")"]^(4-4) /\\*{}% 
+			\indentRule{}\lstinline/    [frameAct]^(0-) ["(" seat "," endHand ")"]^(4-4) ")"/% 
 			% 
 			\rulePar{}\lstinline/dice = [diceSep "-" diceSep]^(1-1) | diceTotal/% 
 			% 
@@ -827,9 +826,9 @@
 			% 
 			\paragraph*{}\lstinline/dice/ represents the results of the dices, either as the two dices separately (\lstinline/diceSep/) or as their sum (\lstinline/diceTotal/). % 
 			% 
-			\rulePar{}\lstinline/dora = [realTiles]^(10-10)/% 
+			\rulePar{}\lstinline/dora = [ "din" | "dac" ]^(1-1) "[" [realTiles]^(10-10) "]"/% 
 			% 
-			\paragraph*{}\lstinline/dora/ documents the actual doras, not the indication tiles. The ten tiles should be arranged in the following order: normal dora, ura dora, kan dora 1, kan ura 1, kan dora 2, \dots{}, kan ura 4. % 
+			\paragraph*{}\lstinline/dora/ documents the indication tiles (\lstinline/"din"/) or the actual doras (\lstinline/"dac"/). It is preferred to record the indicator tiles, because if the actual doras are recorded there may be information loss as to whether the indicator tile is red or not. The ten tiles should be arranged in the following order: normal dora, ura dora, kan dora 1, kan ura 1, kan dora 2, \dots{}, kan ura 4. % 
 			% 
 			\rulePar{}\lstinline/seat = "e" | "s" | "w" | "n"/% 
 			% 
@@ -967,6 +966,7 @@
 			\item{}Enriched introduction section% 
 			\item{}Changed format of \lstinline/ptPostn/% 
 			\item{}Absorbed \lstinline/dice/ and \lstinline/dora/ into \lstinline/frameFlow/, with appropriate changes to the \lstinline/frameFlow/ format. At the same time, forbid existence of multiple \lstinline/frame/s with identical \lstinline/frameId/ in the same \lstinline/match/. % 
+			\item{}Changed format of \lstinline/dora/% 
 			\item{}More TBC% 
 	\end{version}% 
 	% 
