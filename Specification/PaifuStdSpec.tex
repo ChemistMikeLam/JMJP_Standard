@@ -348,7 +348,7 @@
 \tableofcontents{}% 
 % 
 %\clearpage{}% 
-\section{Introduction}% 
+\section{Introduction}\label{sec:intro}% 
 % 
 	\subsection{Background}\label{subsec:bg}% 
 	% 
@@ -356,7 +356,7 @@
 		% 
 		\paragraph*{}As a competitive game of skills, paifus (\textjapanese{牌譜} / \textjapanese{ぱいふ}), or records of play, are very important for this game, just like they are for chess, go, shogi, and other games in this genre. Paifus of professional players can often be found at archives of professional player associations and match organisers, while various online Japanese mahjong platforms also provide for paifu service for its players, with or without charge. % 
 		% 
-		\paragraph*{}However, (from limited google searches) there seems to lack an open standard for digitally storing paifus in a computer-readable fashion. Many paifus still only exist offline, and for those online, each vendor seem to have their own in-house non-disclosed standards. This is detrimental to the development of the sport, as the rise of popularity of the sport would unevitably require paifus to be publically available and transmittable using a common standard. % 
+		\paragraph*{}However, (from limited google searches) there seems to lack an open standard for digitally storing paifus in a computer-readable fashion. Many paifus still only exist offline, and for those online, each vendor seem to have their own in-house non-disclosed standards. This is detrimental to the development of the sport, as the rise of popularity of the sport would inevitably require paifus to be publically available and transmittable using a common standard. % 
 		% 
 	%\clearpage{}% 
 	\subsection{Properties of this standard}\label{subsec:properties}% 
@@ -432,7 +432,7 @@
 		%\clearpage{}% 
 		\subsubsection{Shorthand tokens}\label{subsubsec:shtkn}% 
 		% 
-			\paragraph*{}Shorthand tokens are used to represent high-profile matches, teams, etc. They are used in place of certain \lstinline/strLit/s to reduce typing and to save (a little) disc space. % 
+			\paragraph*{}Shorthand tokens are used to represent high-profile matches, teams, etc. They are used in place of certain \lstinline/strLit/s to reduce typing and to save (a little) disk space. % 
 			% 
 			\rulePar{}Programs designed to write paifu files are not required to use these tokens even if a suitable one is available, although its usage is suggested. % 
 			% 
@@ -616,14 +616,14 @@
 \section{File properties}\label{sec:fileprop}% 
 % 
 	%\clearpage{}% 
-	\subsection{File extension}% 
+	\subsection{File extension}\label{subsec:fileext}% 
 	% 
 		\rulePar{}The paifu files should bear the extension ``\texttt{.jmjp}'' . % 
 		% 
 		\paragraph*{}The extension refers to \textit{J\/}apanese \textit{m\/}ah\textit{j\/}ong \textit{p\/}aifu. A four-letter extension is chosen for reduced likelihood of clashing with other file extensions. % 
 		% 
 	%\clearpage{}% 
-	\subsection{File encoding}% 
+	\subsection{File encoding}\label{subsec:fileenc}% 
 	% 
 		\rulePar{}The paifu files should be plain text files encoded in UTF-8. % 
 		% 
@@ -638,18 +638,18 @@
 		\paragraph*{}The use of BOM in UTF-8 is not suggested. However, since some other programs (especially legacy ones) might insert BOM at the start of the file on creation, reader programs are expected to be able to handle its presence. However, the presence or absence of the mark should not have any effect on the reading of an otherwise syntactically correct paifu file. As for writer programs, they are expected not to insert the mark at anytime. If they are rewriting an existing file, the modified file should not contain the mark, regardless of whether it originally contained the mark or not. % 
 		% 
 	%\clearpage{}% 
-	\subsection{Whitespace}% 
+	\subsection{Whitespace}\label{subsec:ws}% 
 	% 
 		\rulePar{}Whitespaces are ignored except in string literals wrapped in a pair of double quotes. % 
 		% 
 	%\clearpage{}% 
-		\subsection{Comments}\label{subsec:cmt}% 
+	\subsection{Comments}\label{subsec:cmt}% 
 	% 
 		\rulePar{}\texttt{//} marks the beginning of a comment. Such comments extends to the end of the same line. However, if the symbol is enclosed within a pair of double quotes, it will not be parsed as such. % 
 		% 
 		\rulePar{}Any such comments are to be ignored by parsers. % 
 		% 
-		\paragraph*{}This provides for C-style comments that are ignored by parsers, which might be useful for hand-written files. Do not confuse this with the \lstinline/frameCmt/ field explained below in Section~\ref{subsubsec:postfrmflow}; this field contains comment that the parser would read verbatim as strings. % 
+		\paragraph*{}This provides for C-style comments that are ignored by parsers, which might be useful for hand-written files. Do not confuse this with the \lstinline/ptPostnCmt/ (Section~\ref{subsubsec:ptrule}) or \lstinline/frameCmt/ (Section~\ref{subsubsec:frminfo}) fields; they contain comments that the parser would read verbatim as strings. % 
 		% 
 %\clearpage{}% 
 \section{File structure}\label{sec:filestruct}% 
@@ -671,14 +671,14 @@
 	\paragraph*{}\lstinline/frame/ is not a necessary component of \lstinline/match/. While it might be counter-intuitive to allow matches without frame data in the paifu files, this arrangement allows for paifu files to document matches where the actual playing data are not available, but other match-related information exists (eg tournament point changes). This can further allow for homogenity in the layer of files in an archive of paifus. % 
 	% 
 	%\clearpage{}% 
-	\subsection{Pre-match information}% 
+	\subsection{Pre-match information}\label{subsec:prematchinfo}% 
 	% 
 		\rulePar{}\lstinline/preMatchInfo = /\\*{}% 
 		\indentRule{}\lstinline/    [tourInfo]^(0-1) [matchTP]^(1-1) [recerInfo]^(0-) [plyerInfo]^(4-4) /\\*{}% 
 		\indentRule{}\lstinline/    [ptRule]^(0-1)/% 
 		% 
 		%\clearpage{}% 
-		\subsubsection{Tournament information}% 
+		\subsubsection{Tournament information}\label{subsubsec:tourinfo}% 
 		% 
 			\rulePar{}\lstinline/tourInfo = /\\*{}% 
 			\indentRule{}\lstinline/    "tnm[" [tourName]^(0-1) "," [tourYear]^(0-1) "," /\\*{}% 
@@ -698,7 +698,7 @@
 			\rulePar{}\lstinline/matchNumInDay/ is the match number in the same day, in arabic numerals. % 
 			% 
 		%\clearpage{}% 
-		\subsubsection{Match time and place}% 
+		\subsubsection{Match time and place}\label{subsubsec:matchtp}% 
 		% 
 			\rulePar{}\lstinline/matchTP = /\\*{}% 
 			\indentRule{}\lstinline/    "mtp[" [matchDate]^(0-1) "," [matchDayOfWk]^(0-1) "," /\\*{}% 
@@ -715,7 +715,7 @@
 			\paragraph*{}Note that \lstinline/matchDate/ and \lstinline/tourYear/ does not necessarily overlap. For example, the matches for M league 2018 extended well into 2019. % 
 			% 
 		%\clearpage{}% 
-		\subsubsection{Recorder information}% 
+		\subsubsection{Recorder information}\label{subsubsec:recinfo}% 
 		% 
 			\rulePar{}\lstinline/recerInfo = "rec[" [recerName]^(0-1) "," [framesRecd]^(0-1) "]"/% 
 			% 
@@ -726,7 +726,7 @@
 			\rulePar{}\lstinline/framesRecd = "all" | [frameId]^(0-)/% 
 			% 
 		%\clearpage{}% 
-		\subsubsection{Player information}% 
+		\subsubsection{Player information}\label{subsubsec:playerinfo}% 
 		% 
 			\rulePar{}\lstinline/plyerInfo = /\\*{}% 
 			\indentRule{}\lstinline/    "ply[" plyerId "," [plyerName]^(0-1) "," [plyerTeam]^(0-1) "," /\\*{}% 
@@ -750,14 +750,14 @@
 			% 
 			\paragraph*{}The shorthand tokens of \lstinline/plyerAffil/ listed above provide for the professional associations as listed in Wikipedia\cite{wiki-proassn}. % 
 			% 
-			\rulePar{}Shorthand token \lstinline/"none"/ of field \lstinline/plyerAffil/ is used for ``no known affiliation''; for no data leave the whole field out. % 
+			\rulePar{}Shorthand token \lstinline/"none"/ of field \lstinline/plyerAffil/ is used for ``no known affiliation''; for no data, leave the field empty. % 
 			% 
 			\rulePar{}\lstinline/ptTourPrev = ptTour/% 
 			% 
 			\paragraph*{}\lstinline/ptTourPrev/ represent the personal and team tournament points right before the match begins. % 
 			% 
 		%\clearpage{}% 
-		\subsubsection{Point rules}% 
+		\subsubsection{Point rules}\label{subsubsec:ptrule}% 
 		% 
 			\rulePar{}\lstinline/ptRule = /\\*{}% 
 			\indentRule{}\lstinline/    "ptr[" ptStart "," ptRetn "," ptPostn "," ptHonba "," ptTenpai "]"/% 
@@ -778,9 +778,11 @@
 			% 
 			\rulePar{}\lstinline/ptPostnCmt = strLit/% 
 			%
-			\paragraph*{}\lstinline/ptPostn/ refers to the points that player exchange based on their rankings in the match (\textjapanese{ウマ} / \textjapanese{順位点}) separated into cases, each documented in a \lstinline/ptPostnCase/. Each \lstinline/ptPostnCase/ first include a \lstinline/ptPostnCmt/, which is a \lstinline/strLit/ comment describing the condition to which this \lstinline/ptPostnCase/ applies to. Next follows a series of 4 \lstinline/pt/s which denotes the point changes to each player when this case is applied, arranged in the order of first place, second place, third place and fourth place. % 
+			\paragraph*{}\lstinline/ptPostn/ refers to the points that player exchange based on their rankings in the match (\textjapanese{ウマ} / \textjapanese{順位点}) separated into cases, each documented in a \lstinline/ptPostnCase/. In many torunaments only 1 case exists, which is applied in all conditions. Some tournaments have more complicated systems in which the case to apply changes base on various conditions. 
 			% 
-			\paragraph*{}In many torunaments only 1 case exists, which is applied in all conditions. Some tournaments have more complicated systems in which they select which case to apply base on various conditions. In either case, the relations \lstinline/pt/${}_1 \geq{} {}$\lstinline/pt/${}_2 \geq{} {}$\lstinline/pt/${}_3 \geq{} {}$\lstinline/pt/${}_4$ and \lstinline/pt/${}_1 + {}$\lstinline/pt/${}_2 + {}$\lstinline/pt/${}_3 + {}$\lstinline/pt/${}_4 = 0$ usually holds. % 
+			\paragraph*{}Each \lstinline/ptPostnCase/ first include a \lstinline/ptPostnCmt/, which is a \lstinline/strLit/ comment describing the condition for which this \lstinline/ptPostnCase/ applies. Note that this is different from the file comments described in Section~\ref{subsec:cmt}, which are outright ignored by the parser. % 
+			% 
+			\paragraph*{}Next follows a series of 4 \lstinline/pt/s which denotes the point changes to each player when this case is applied, arranged in the order of first place, second place, third place and fourth place. The relations \lstinline/pt/${}_1 \geq{} {}$\lstinline/pt/${}_2 \geq{} {}$\lstinline/pt/${}_3 \geq{} {}$\lstinline/pt/${}_4$ and \lstinline/pt/${}_1 + {}$\lstinline/pt/${}_2 + {}$\lstinline/pt/${}_3 + {}$\lstinline/pt/${}_4 = 0$ usually holds. % 
 			% 
 			\rulePar{}\lstinline/ptHonba = pt/% 
 			% 
@@ -800,7 +802,7 @@
 		\paragraph*{}A \lstinline/frame/ records the details of a single frame in the match. All elements except \lstinline/frameId/ are optional. For \lstinline/frameFlow/, it usually appears only once, if it ever appears. This is because a frame with the same \lstinline/frameId/ is usually only played once in one match. However, in some (rare) cases where some player(s) violates the rules, the rules may stipulate that the affected frame be null and void, and the frame starts afresh with the same \lstinline/frameId/, possibly with point penalties to the player(s) at fault. In such case, since we disallow the inclusion of multiple frames with the same \lstinline/frameId/ in the same \lstinline/match/, we allow more than one \lstinline/frameFlow/ within one \lstinline/frame/, usually following chronological order. It would be good practice to note such incidents in the \lstinline/frameCmt/ field. % 
 		% 
 		%\clearpage{}% 
-		\subsubsection{Before frame flow}\label{subsubsec:prefrmflow}% 
+		\subsubsection{Frame information}\label{subsubsec:frminfo}% 
 		% 
 			\rulePar{}\lstinline/kyoutak = pt/% 
 			% 
@@ -808,7 +810,13 @@
 			% 
 			\rulePar{}\lstinline/ptFrmStart = "pfs[" pt ["," pt]^(3-3) "]"/% 
 			% 
-			\paragraph*{}\lstinline/ptFrmStart/ indicates the points each player has at the beginning of the frame, in the order of East seat, South seat, West seat and finally North seat. % 
+			\rulePar{}\lstinline/ptFrmEnd = "pfe[" pt ["," pt]^(3-3) "]"/% 
+			% 
+			\paragraph*{}\lstinline/ptFrmStart/ indicates the points each player has at the beginning of the frame, in the order of East seat, South seat, West seat and finally North seat. \lstinline/ptFrmEnd/ is analogous for points at end of frame. % 
+			% 
+			\rulePar{}\lstinline/frameCmt = strLit/% 
+			% 
+			\paragraph*{}\lstinline/frameCmt/ is used for comments on the frame. This field contains comment that would be read verbatim by parsers as strings (\lstinline/strLit/), which might be displayed or outputted depending on program setttings. On the contrary, the file comments descrbed in Section~\ref{subsec:cmt} would be outright ignored by parsers. % 
 			% 
 		%\clearpage{}% 
 		\subsubsection{Frame flow}\label{subsubsec:frmflow}% 
@@ -874,19 +882,15 @@
 			% 
 			\rulePar{}\lstinline/actTmg = "tg"/% 
 			% 
-			\paragraph*{}\lstinline/actTmg/ refers to the case where a player has carried out tsumogiri (\textjapanese{ツモ切り}), or discarding the draw tile directly. It is specially documented because the act can imply meanings for other players on the table. % 
-			% 
 			\rulePar{}\lstinline/actKrg = "kg"/% 
 			% 
-			\paragraph*{}\lstinline/actKrg/ refers to the case where a player has carried out karagiri (\textjapanese{空切り}), or discarding a tile in hand that is identical to the draw tile. This act is often done to conceal tsumogiri, and thus it also carries special meaning, leading to it being coumented specially. % 
+			\paragraph*{}\lstinline/actTmg/ refers to the case where a player has carried out tsumogiri (\textjapanese{ツモ切り}), or discarding the draw tile directly. \lstinline/actKrg/ refers to the case where a player has carried out karagiri (\textjapanese{空切り}), or discarding a tile in hand that is identical to the draw tile, which is often done to conceal tsumogiri. Both tsumogiri and concealing of it carries special meaning, so they are specially documented. When it is unclear whether the player did tsumogiri or karagiri, record the actual tile discarded. % 
 			% 
 			\rulePar{}\lstinline/actKkn = "kk[" realTiles "]"/% 
 			% 
-			\paragraph*{}\lstinline/actKkn/ refers to the case where a player declares a kakan with the documented tile. Provided that the kakan stands (that is, no one steals it), the next \lstinline/frameAct/ should be by the same player, drawing an \lstinline/actRsn/. % 
-			% 
 			\rulePar{}\lstinline/actAnk = "ak[" [realTiles]^(4-4) "]"/% 
 			% 
-			\paragraph*{}\lstinline/actAnk/ refers to the case where a player declares an ankan with the 4 documented tiles. Provided that the ankan stands (that is, no one steals it), the next \lstinline/frameAct/ should be by the same player, drawing am \lstinline/actRsn/. It should be noted that ankan usually stands, since the limited variant of rules that alllows stealing ankan only allows kokushi (\textjapanese{国士無双}) to do so. % 
+			\paragraph*{}\lstinline/actKkn/ refers to the case where a player declares a kakan with the documented tile, while \lstinline/actAnk/ refers to the case where a player declares an ankan with the 4 documented tiles. Since both kakan and ankan are stealable, the next \lstinline/frameAct/ varies depends on whether the kan is being stealed. If the kan stands (that is, no one steals it), the next \lstinline/frameAct/ should be by the same player, drawing an \lstinline/actRsn/. If the kan is stolen, the next \lstinline/frameAct/ would be by the stealing player, drawing an \lstinline/actRon/. It should be noted that ankan usually stands; only a limited number of variant rules allow stealing of ankan, and they usually only allow kokushi (\textjapanese{国士無双}) to do so. % 
 			% 
 			\rulePar{}\lstinline/actTsm = "tm"/% 
 			% 
@@ -898,19 +902,8 @@
 			% 
 			\rulePar{}\lstinline/endHand = hand/% 
 			% 
-		%\clearpage{}% 
-		\subsubsection{After frame flow}\label{subsubsec:postfrmflow}% 
-		% 
-			\rulePar{}\lstinline/ptFrmEnd = "pfe[" pt ["," pt]^(3-3) "]"/% 
-			% 
-			\paragraph*{}\lstinline/ptFrmEnd/ is analogous to \lstinline/ptFrmStart/ except that it represents points at end of frame. % 
-			% 
-			\rulePar{}\lstinline/frameCmt = strLit/% 
-			% 
-			\paragraph*{}\lstinline/frameCmt/ is used for comments on the frame. This field contains comment that would be read verbatim by parsers as strings (\lstinline/strLit/), which might be displayed or outputted depending on program setttings. On the contrary, the file comments descrbed in Section~\ref{subsec:cmt} would be outright ignored by parsers. % 
-			% 
 	%\clearpage{}% 
-	\subsection{Post-match information}% 
+	\subsection{Post-match information}\label{subsec:postmatchinfo}% 
 	% 
 		\rulePar{}\lstinline/postMatchInfo = [ptMatchEnd]^(0-1) [ptTourNew]^(0-1)/% 
 		% 
@@ -933,6 +926,13 @@
 % 
 	\paragraph*{}This documentation is licensed under the GNU FDL v1.3 or later, with no invariant sections and no cover text. A verbatim copy of the license can be found in this repository. % 
 	% 
+%\clearpage{}% 
+\begin{thebibliography}{9}% 
+	\bibitem{wiki-proassn}% 
+		\url{https://ja.wikipedia.org/wiki/%E7%AB%B6%E6%8A%80%E9%BA%BB%E9%9B%80}. \\{}% 
+		Accessed \DTMdisplaydate{2020}{6}{21}{6}. % 
+\end{thebibliography}% 
+% 
 %\clearpage{}% 
 \begin{changelog}[% 
 	section=true% 
@@ -963,11 +963,11 @@
 		,date=\releaseDate{}% 
 	]% 
 		\changed{}% 
-			\item{}Enriched introduction section% 
+			\item{}Enriched introduction section and the explaination of certain rules. % 
 			\item{}Changed format of \lstinline/ptPostn/% 
 			\item{}Absorbed \lstinline/dice/ and \lstinline/dora/ into \lstinline/frameFlow/, with appropriate changes to the \lstinline/frameFlow/ format. At the same time, forbid existence of multiple \lstinline/frame/s with identical \lstinline/frameId/ in the same \lstinline/match/. % 
 			\item{}Changed format of \lstinline/dora/% 
-			\item{}More TBC% 
+			\item{}Small-scale restructuring of paragraphs and sections, with some typos fixed. % 
 	\end{version}% 
 	% 
 	\begin{version}[% 
@@ -1005,18 +1005,11 @@
 \section{To-do and possible extensions}% 
 % 
 	\begin{itemize}% 
-		\item{}This document may have many typos, which needs correction% 
-		\item{}A lot of explanations might be inadequte and needs to be expanded% 
+%		\item{}This document may have many typos, which needs correction% 
+%		\item{}A lot of explanations might be inadequte and needs to be expanded% 
 		\item{}The shorthand tokens currently only covers a subset of Japanese stuffs, but considering that Japanese mahjong is expanding and becoming international, more tokens might be beneficial% 
 	\end{itemize}% 
 	% 
-% 
-%\clearpage{}% 
-\begin{thebibliography}{9}% 
-	\bibitem{wiki-proassn}% 
-		\url{https://ja.wikipedia.org/wiki/%E7%AB%B6%E6%8A%80%E9%BA%BB%E9%9B%80}. \\{}% 
-		Accessed \DTMdisplaydate{2020}{6}{21}{6}. % 
-\end{thebibliography}% 
 % 
 %\clearpage{}% 
 \printindex{}% 
