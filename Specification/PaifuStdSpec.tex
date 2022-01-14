@@ -506,6 +506,8 @@
 			% 
 			\rulePar{}\lstinline/frameHonba/ refers to the honba number of the frame. It is an integer${} \ge 0$. % 
 			% 
+			\rulePar{}No two \lstinline/frame/s in one single \lstinline/match/ shall share the same \lstinline/frameId/. % 
+			% 
 		%\clearpage{}% 
 		\subsubsection{Points representations}\label{subsubsec:pt}% 
 		% 
@@ -792,9 +794,10 @@
 	\subsection{Frame format}\label{subsec:frame}% 
 	% 
 		\rulePar{}\lstinline/frame = /\\*{}% 
-		\indentRule{}\lstinline/    "frm[" frameId "," [kyoutak]^(0-1) "," [dice]^(0-1) "," /\\*{}% 
-		\indentRule{}\lstinline/    [ptFrmStart]^(0-1) "," [dora]^(0-1) "," [frameFlow]^(0-) "," /\\*{}% 
-		\indentRule{}\lstinline/    [ptFrmEnd]^(0-1) "," [frameCmt]^(0-1) "]"/% 
+		\indentRule{}\lstinline/    "frm[" frameId "," [kyoutak]^(0-1) "," [ptFrmStart]^(0-1) "," /\\*{}% 
+		\indentRule{}\lstinline/    [frameFlow]^(0-) "," [ptFrmEnd]^(0-1) "," [frameCmt]^(0-1) "]"/% 
+		% 
+		\paragraph*{}A \lstinline/frame/ records the details of a single frame in the match. All elements except \lstinline/frameId/ are optional. For \lstinline/frameFlow/, it usually appears only once, if it ever appears. This is because a frame with the same \lstinline/frameId/ is usually only played once in one match. However, in some (rare) cases where some player(s) violates the rules, the rules may stipulate that the affected frame be null and void, and the frame starts afresh with the same \lstinline/frameId/, possibly with point penalties to the player(s) at fault. In such case, since we disallow the inclusion of multiple frames with the same \lstinline/frameId/ in the same \lstinline/match/, we allow more than one \lstinline/frameFlow/ within one \lstinline/frame/, following chronological order. It would be good practice to note such incidents in the \lstinline/frameCmt/ field. % 
 		% 
 		%\clearpage{}% 
 		\subsubsection{Before frame flow}\label{subsubsec:prefrmflow}% 
@@ -802,6 +805,18 @@
 			\rulePar{}\lstinline/kyoutak = pt/% 
 			% 
 			\paragraph*{}\lstinline/kyoutak/ refers to the number of riichi stick left on the table (\textjapanese{供託}) at the start of the frame. Since each stick has a value of $1.0$, we use the point value to represent it. Note that the honba sticks does not count; this information is already encoded in \lstinline/frameId/. % 
+			% 
+			\rulePar{}\lstinline/ptFrmStart = "pfs[" pt ["," pt]^(3-3) "]"/% 
+			% 
+			\paragraph*{}\lstinline/ptFrmStart/ indicates the points each player has at the beginning of the frame, in the order of East seat, South seat, West seat and finally North seat. % 
+			% 
+		%\clearpage{}% 
+		\subsubsection{Frame flow}\label{subsubsec:frmflow}% 
+		% 
+			\rulePar{}\lstinline/frameFlow = /\\*{}% 
+			\indentRule{}\lstinline/    "(" [dice]^(0-1) "," [dora]^(0-1) "," /\\*{}% 
+			\indentRule{}\lstinline/    ["(" seat "," startHand ")"]^(4-4) [frameAct]^(0-) /\\*{}% 
+			\indentRule{}\lstinline/    ["(" seat "," endHand ")"]^(4-4) ")"/% 
 			% 
 			\rulePar{}\lstinline/dice = [diceSep "-" diceSep]^(1-1) | diceTotal/% 
 			% 
@@ -812,20 +827,9 @@
 			% 
 			\paragraph*{}\lstinline/dice/ represents the results of the dices, either as the two dices separately (\lstinline/diceSep/) or as their sum (\lstinline/diceTotal/). % 
 			% 
-			\rulePar{}\lstinline/ptFrmStart = "pfs[" pt ["," pt]^(3-3) "]"/% 
-			% 
-			\paragraph*{}\lstinline/ptFrmStart/ indicates the points each player has at the beginning of the frame, in the order of East seat, South seat, West seat and finally North seat. % 
-			% 
 			\rulePar{}\lstinline/dora = [realTiles]^(10-10)/% 
 			% 
 			\paragraph*{}\lstinline/dora/ documents the actual doras, not the indication tiles. The ten tiles should be arranged in the following order: normal dora, ura dora, kan dora 1, kan ura 1, kan dora 2, \dots{}, kan ura 4. % 
-			% 
-		%\clearpage{}% 
-		\subsubsection{Frame flow}\label{subsubsec:frmflow}% 
-		% 
-			\rulePar{}\lstinline/frameFlow = /\\*{}% 
-			\indentRule{}\lstinline/    ["(" seat "," startHand ")"]^(4-4) [frameAct]^(0-) ["(" seat "," /\\*{}% 
-			\indentRule{}\lstinline/    endHand ")"]^(4-4)/% 
 			% 
 			\rulePar{}\lstinline/seat = "e" | "s" | "w" | "n"/% 
 			% 
@@ -962,6 +966,7 @@
 		\changed{}% 
 			\item{}Enriched introduction section% 
 			\item{}Changed format of \lstinline/ptPostn/% 
+			\item{}Absorbed \lstinline/dice/ and \lstinline/dora/ into \lstinline/frameFlow/, with appropriate changes to the \lstinline/frameFlow/ format. At the same time, forbid existence of multiple \lstinline/frame/s with identical \lstinline/frameId/ in the same \lstinline/match/. % 
 			\item{}More TBC% 
 	\end{version}% 
 	% 
